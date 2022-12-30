@@ -18,5 +18,8 @@
         "./static/css/main.d41ed950.css"
       ]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
