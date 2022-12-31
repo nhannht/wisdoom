@@ -2,10 +2,10 @@
   "short_name": "React App",
   "name": "Create React App Sample",
   "manifest_version": 3,
+  "version": "0.1.0",
   "action": {
     "default_popup": "index.html"
   },
-  "start_url": ".",
   "content_scripts": [
     {
       "matches": [
@@ -15,11 +15,17 @@
         "./static/js/content.js"
       ],
       "css": [
-        "./static/css/main.d41ed950.css"
       ]
     }
   ],
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "storage",
+    "notifications",
+    "webNavigation"
+  ]
 }

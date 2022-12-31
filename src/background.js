@@ -130,25 +130,48 @@ function getResultListener() {
 
 getResultListener();
 let oldSearch = ""
+//
+// function googleResultListener() {
+//     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+//         if (tab.url.includes("google.com/search")) {
+//             const url = new URL(tab.url)
+//             const query = url.searchParams.get("q")
+//             // if (query === oldSearch) return
+//             // Fix the problem reload event execute multiple time
+//             oldSearch = query
+//             const result = await getWolframFullResult(url.searchParams.get("q"))
+//             const resultText = await result.clone().text()
+//             console.log("We got result from wolfram alpha")
+//             await chrome.tabs.sendMessage(tabId, {"google": resultText});
+//         }
+//     })
+// }
+// Make googleResultListener() also work after reload tab
+chrome.webNavigation.onCommitted.addListener((details) => {
+    if (["reload", "link", "typed", "generated"].includes(details.transitionType) &&
+        details.url.includes("google.com/search")) {
+        console.log("We got reload event")
 
-function googleResultListener() {
-    chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-        if (tab.url.includes("google.com/search")) {
-            const url = new URL(tab.url)
+        chrome.webNavigation.onCompleted.addListener(async function onComplete() {
+            console.log("We got complete event")
+
+            const url = new URL(details.url)
             const query = url.searchParams.get("q")
-            if (query === oldSearch) return
+            // if (query === oldSearch) return
             // Fix the problem reload event execute multiple time
             oldSearch = query
             const result = await getWolframFullResult(url.searchParams.get("q"))
             const resultText = await result.clone().text()
             console.log("We got result from wolfram alpha")
-            await chrome.tabs.sendMessage(tabId, {"google": resultText});
-        }
+            await chrome.tabs.sendMessage(details.tabId, {"google": resultText});
 
-    })
-}
+            chrome.webNavigation.onCompleted.removeListener(onComplete);
+        });
+    }
+});
 
-googleResultListener();
+
+// googleResultListener();
 
 // Add event listener every time user search google
 
