@@ -1,3 +1,4 @@
+/* global chrome */
 // import Header from '@jetbrains/ring-ui/dist/header/header';
 // import Text from '@jetbrains/ring-ui/dist/text/text';
 import Dropdown from '@jetbrains/ring-ui/dist/dropdown/dropdown';
@@ -8,10 +9,10 @@ import Button from '@jetbrains/ring-ui/dist/button/button';
 import {useState} from "react";
 import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
 import Img from 'react-image';
-import Island from "@jetbrains/ring-ui/dist/island/island";
 import AdaptiveIsland from "@jetbrains/ring-ui/dist/island/island";
 import Content from "@jetbrains/ring-ui/dist/island/content";
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
+import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
 
 
 export function GoogleTabs(props) {
@@ -49,9 +50,13 @@ export function GoogleTabs(props) {
         <Grid data-test="alignment">
             <Row start="xs">
                 <Col xs={2}>
-                    <Dropdown anchor={<Button key='dropdown' data-test='button-dropdown' {...{['dropdown']: true}} >
-                        {truncate(selected.title, 15)}
-                    </Button>}>
+                    <Dropdown anchor={
+                        <Tooltip title={selected.title}>
+                            <Button key='dropdown' data-test='button-dropdown' {...{['dropdown']: true}} >
+                                {truncate(selected.title, 15)}
+                            </Button>
+                        </Tooltip>
+                    }>
                         <PopupMenu closeOnSelect
                                    data={podsTitle.map(label => ({label}))}
                                    onSelect={event => {
@@ -71,11 +76,37 @@ export function GoogleTabs(props) {
                         </Header>
                         <Content>{selected.content.map((subpod, index) => {
                             return (
-                                <div key={index}>
+
+                                <div key={index} >
                                     <Img src={subpod.subpodUrl}
-                                    loader={<Loader/>}
+                                         loader={<Loader/>}
                                          key={subpod.subpodUrl}
                                     />
+                                    <br></br>
+                                    <Dropdown anchor={"copy"} style={{float: 'right'}}>
+                                        <PopupMenu closeOnSelect
+                                                   data={[{label: 'Copy Image Url'},
+                                                       {label: 'Save Image'},
+                                                       {label: 'Copy Text'}
+                                                   ]}
+                                                   onSelect={async event => {
+                                                       if (event.label === 'Save Image') {
+                                                           await chrome.downloads.download({url: subpod.subpodUrl});
+
+                                                       }
+                                                       if (event.label === 'Copy Text') {
+                                                           navigator.clipboard.writeText(subpod.subpodText);
+                                                       }
+                                                       if (event.label === 'Copy Image Url') {
+                                                           navigator.clipboard.writeText(subpod.subpodUrl);
+                                                       }
+                                                   }}
+
+                                        />
+
+
+                                    </Dropdown>
+
                                 </div>
                             )
                         })}</Content>
@@ -84,6 +115,7 @@ export function GoogleTabs(props) {
                 </Col>
             </Row>
         </Grid>
-    );
+    )
+        ;
 
 }

@@ -1,14 +1,10 @@
 /* global chrome */
-// add react here
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '@jetbrains/ring-ui/dist/style.css';
 // SimpleContent component is wrapper around ContentLayout component
 // It is used to display content in the popup
 import {GoogleTabs} from "./Components/GoogleTabs";
-// import ImageComponent from "./Components/ImageComponent";
-import Loader from '@jetbrains/ring-ui/dist/loader/loader';
-import Img from 'react-image';
 // Render at appbar
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.google) {
