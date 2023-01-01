@@ -1,6 +1,4 @@
 /* global chrome */
-// import Header from '@jetbrains/ring-ui/dist/header/header';
-// import Text from '@jetbrains/ring-ui/dist/text/text';
 import Dropdown from '@jetbrains/ring-ui/dist/dropdown/dropdown';
 import PopupMenu from '@jetbrains/ring-ui/dist/popup-menu/popup-menu';
 import Header from '@jetbrains/ring-ui/dist/header/header';
@@ -13,7 +11,8 @@ import AdaptiveIsland from "@jetbrains/ring-ui/dist/island/island";
 import Content from "@jetbrains/ring-ui/dist/island/content";
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
-
+import Icon from '@jetbrains/ring-ui/dist/icon/icon';
+import copyIcon from '@jetbrains/icons/copy';
 
 export function GoogleTabs(props) {
     const json = props.data;
@@ -83,15 +82,18 @@ export function GoogleTabs(props) {
                                          key={subpod.subpodUrl}
                                     />
                                     <br></br>
-                                    <Dropdown anchor={"copy"} style={{float: 'right'}}>
+                                    <Dropdown anchor={
+                                        <Icon glyph={copyIcon} size={Icon.Size.Size16}/>
+                                    } style={{float: 'right'}}>
                                         <PopupMenu closeOnSelect
                                                    data={[{label: 'Copy Image Url'},
+                                                       {label: 'Copy Image'},
                                                        {label: 'Save Image'},
-                                                       {label: 'Copy Text'}
+                                                       {label: 'Copy Text'},
                                                    ]}
                                                    onSelect={async event => {
                                                        if (event.label === 'Save Image') {
-                                                           await chrome.downloads.download({url: subpod.subpodUrl});
+                                                              await chrome.runtime.sendMessage({urlDownload: subpod.subpodUrl})
 
                                                        }
                                                        if (event.label === 'Copy Text') {
@@ -100,6 +102,7 @@ export function GoogleTabs(props) {
                                                        if (event.label === 'Copy Image Url') {
                                                            navigator.clipboard.writeText(subpod.subpodUrl);
                                                        }
+
                                                    }}
 
                                         />

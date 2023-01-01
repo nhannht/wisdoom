@@ -13,6 +13,5 @@ chrome.runtime.onMessage.addListener((msg) => {
         // Render under the appbar
         const appbar = document.querySelector("#appbar")
         ReactDOM.render(<GoogleTabs data={resultJSON}/>, appbar)
-
     }
 })

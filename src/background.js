@@ -73,6 +73,16 @@ function freeInputListener() {
 }
 
 freeInputListener();
+function downloadUrl () {
+    chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.urlDownload) {
+            chrome.downloads.download({
+                url: msg.urlDownload,
+            })
+        }
+    })
+}
+downloadUrl()
 
 function getResultListener() {
     chrome.contextMenus.onClicked.addListener(

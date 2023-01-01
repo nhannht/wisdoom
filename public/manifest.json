@@ -27,6 +27,7 @@
     "storage",
     "notifications",
     "webNavigation",
-    "downloads"
+    "downloads",
+    "clipboardWrite"
   ]
 }
