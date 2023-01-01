@@ -97,10 +97,10 @@ export function GoogleTabs(props) {
 
                                                        }
                                                        if (event.label === 'Copy Text') {
-                                                           navigator.clipboard.writeText(subpod.subpodText);
+                                                           await navigator.clipboard.writeText(subpod.subpodText);
                                                        }
                                                        if (event.label === 'Copy Image Url') {
-                                                           navigator.clipboard.writeText(subpod.subpodUrl);
+                                                           await navigator.clipboard.writeText(subpod.subpodUrl);
                                                        }
 
                                                    }}
