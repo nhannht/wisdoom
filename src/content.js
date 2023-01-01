@@ -5,6 +5,8 @@ import '@jetbrains/ring-ui/dist/style.css';
 // SimpleContent component is wrapper around ContentLayout component
 // It is used to display content in the popup
 import {GoogleTabs} from "./Components/GoogleTabs";
+import KnowledgeDashBoard from "./Components/KnowledgeDashBoard";
+import {ProSidebarProvider} from "react-pro-sidebar";
 // Render at appbar
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.google) {
@@ -15,3 +17,11 @@ chrome.runtime.onMessage.addListener((msg) => {
         ReactDOM.render(<GoogleTabs data={resultJSON}/>, appbar)
     }
 })
+
+// Render KnowledgeDashBoard
+
+const KnowledgeDashBoardPlaceHolder = document.createElement("div")
+KnowledgeDashBoardPlaceHolder.id = "KnowledgeDashBoardPlaceHolder"
+document.body.appendChild(KnowledgeDashBoardPlaceHolder)
+ReactDOM.render(
+    <ProSidebarProvider><KnowledgeDashBoard/></ProSidebarProvider>, document.getElementById('KnowledgeDashBoardPlaceHolder'))

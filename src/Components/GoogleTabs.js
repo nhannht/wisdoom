@@ -68,7 +68,7 @@ export function GoogleTabs(props) {
                         />
                     </Dropdown>
                 </Col>
-                <Col xs={8}>
+                <Col xs={6}>
                     <AdaptiveIsland>
                         <Header>
                             <Text>{selected.title}</Text>
@@ -83,7 +83,7 @@ export function GoogleTabs(props) {
                                     />
                                     <br></br>
                                     <Dropdown anchor={
-                                        <Icon glyph={copyIcon} size={Icon.Size.Size16}/>
+                                        <Icon glyph={copyIcon} />
                                     } style={{float: 'right'}}>
                                         <PopupMenu closeOnSelect
                                                    data={[{label: 'Copy Image Url'},

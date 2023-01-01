@@ -61,14 +61,15 @@ function createContextMenu() {
 createContextMenu();
 
 function freeInputListener() {
-    chrome.runtime.onMessage.addListener((msg, sender) => {
+    chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
         if (msg.freeStyleQuery) {
             console.log("We received free style query")
             getWolframFullResult(msg.freeStyleQuery).then(res => res.json()).then(json => {
                 console.log(json)
-                chrome.tabs.sendMessage(sender.tab.id, {result: JSON.stringify(json)})
+                sendResponse( {result: JSON.stringify(json)})
             })
         }
+        return true
     })
 }
 
@@ -138,37 +139,39 @@ function getResultListener() {
     )
 }
 
-getResultListener();
-let oldSearch = ""
+// getResultListener();
 //
-// function googleResultListener() {
-//     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-//         if (tab.url.includes("google.com/search")) {
-//             const url = new URL(tab.url)
-//             const query = url.searchParams.get("q")
-//             // if (query === oldSearch) return
-//             // Fix the problem reload event execute multiple time
-//             oldSearch = query
-//             const result = await getWolframFullResult(url.searchParams.get("q"))
-//             const resultText = await result.clone().text()
-//             console.log("We got result from wolfram alpha")
-//             await chrome.tabs.sendMessage(tabId, {"google": resultText});
-//         }
-//     })
-// }
+let oldSearch = ""
+function googleResultListener() {
+    chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+        if (tab.url.includes("google.com/search")) {
+            const url = new URL(tab.url)
+            const query = url.searchParams.get("q")
+            if (query === oldSearch) return
+            // Fix the problem  event execute multiple time
+            oldSearch = query
+            const result = await getWolframFullResult(url.searchParams.get("q"))
+            const resultText = await result.clone().text()
+            console.log("We got result from wolfram alpha")
+            await chrome.tabs.sendMessage(tabId, {"google": resultText});
+        }
+    })
+}
+googleResultListener();
+
 // Make googleResultListener() also work after reload tab
 chrome.webNavigation.onCommitted.addListener((details) => {
     if (["reload", "link", "typed", "generated"].includes(details.transitionType) &&
         details.url.includes("google.com/search")) {
-        console.log("We got reload event")
+        // console.log("We got reload event")
 
         chrome.webNavigation.onCompleted.addListener(async function onComplete() {
-            console.log("We got complete event")
+            // console.log("We got complete event")
 
             const url = new URL(details.url)
             const query = url.searchParams.get("q")
-            // if (query === oldSearch) return
-            // Fix the problem reload event execute multiple time
+            if (query === oldSearch) return
+            // Fix the problem  event execute multiple time
             oldSearch = query
             const result = await getWolframFullResult(url.searchParams.get("q"))
             const resultText = await result.clone().text()
@@ -181,7 +184,6 @@ chrome.webNavigation.onCommitted.addListener((details) => {
 });
 
 
-// googleResultListener();
 
 // Add event listener every time user search google
 
