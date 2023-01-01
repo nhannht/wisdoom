@@ -1,8 +1,8 @@
 /* global chrome */
 import Draggable from "react-draggable";
 import Button from '@jetbrains/ring-ui/dist/button/button';
-// import {Sidebar} from "react-pro-sidebar";
-// import {useProSidebar} from "react-pro-sidebar";
+import {Sidebar} from "react-pro-sidebar";
+import {useProSidebar} from "react-pro-sidebar";
 import {AdaptiveIsland} from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
 import Content from "@jetbrains/ring-ui/dist/island/content";
@@ -21,17 +21,19 @@ export default function KnowledgeDashBoard() {
         buttonPosition: {x: 0, y: 0},
     });
 
-    /*const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
+    const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
 
     function toggle() {
         if (collapsed) {
             toggleSidebar(true);
             collapseSidebar(false);
+            setState({...state, dashBoardHidden: false});
         } else {
             collapseSidebar(true);
             toggleSidebar(false);
+            setState({...state, dashBoardHidden: true});
         }
-    }*/
+    }
 
     function listPods(json) {
         const listPods = json.queryresult.pods.map((pod) => {
@@ -59,17 +61,19 @@ export default function KnowledgeDashBoard() {
             setState({pods: listPods(data)});
         });
     }
-    function onDragStart(e){
-        setState({...state,buttonPosition: {x: e.screenX, y: e.screenY}});
+
+    function onDragStart(e) {
+        setState({...state, buttonPosition: {x: e.screenX, y: e.screenY}});
     }
-    function onDragStop(e){
+
+    function onDragStop(e) {
         const dragX = Math.abs(e.screenX - state.buttonPosition.x);
         const dragY = Math.abs(e.screenY - state.buttonPosition.y);
-        console.log(dragX,dragY)
-        if ( dragX > 5 || dragY > 5 ) {
+        // console.log(dragX,dragY)
+        if (dragX > 5 || dragY > 5) {
             e.stopPropagation();
         } else {
-            setState({...state, dashBoardHidden: !state.dashBoardHidden});
+            toggle();
         }
 
     }
@@ -88,24 +92,28 @@ export default function KnowledgeDashBoard() {
                 >
                     Click me</Button>
             </Draggable>
-            <Popup
-                style={{position: "fixed", top: 5, right: 0, zIndex: 9000}}
-                hidden={state.dashBoardHidden}
-                onCloseAttempt={() =>
-                {
-                    console.log("onCloseAttempt")
-                    setState({...state, dashBoardHidden: true})}
-                }
-            >
+            <Sidebar
+                defaultCollapsed={true}
+                collapsedWidth={0}
+                width={"50%"}
+                style={{
+                    position: "fixed",
+                    bottom: "5%",
+                    right: 0,
+                    height: "90%",
+                }} >
                 <AdaptiveIsland>
                     <Header border>
                         Knowledge Dashboard
-                        <Button id={"closeButton"} onClick={(e) => {
-                            setState({...state, dashBoardHidden: true})
+                        <Button
+                            id={"closeButton"} onClick={(e) => {
+                            toggle();
                         }}>
-                            Close</Button>
+                            Close
+                        </Button>
+
                     </Header>
-                    <Content>
+                    <Content fade>
                         <Input placeholder={"Press Enter to start searching knowledge"} size={Size.L}
                                onKeyDown={(e) => {
                                    if (e.key === 'Enter') {
@@ -131,8 +139,7 @@ export default function KnowledgeDashBoard() {
                             )
                         })}
                     </Content>
-                </AdaptiveIsland>
-            </Popup>
+                </AdaptiveIsland></Sidebar>
         </div>
     )
 }

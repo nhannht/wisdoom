@@ -6,7 +6,7 @@ import '@jetbrains/ring-ui/dist/style.css';
 // It is used to display content in the popup
 import {GoogleTabs} from "./Components/GoogleTabs";
 import KnowledgeDashBoard from "./Components/KnowledgeDashBoard";
-// import {ProSidebarProvider} from "react-pro-sidebar";
+import {ProSidebarProvider} from "react-pro-sidebar";
 // Render at appbar
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.google) {
@@ -24,4 +24,6 @@ const KnowledgeDashBoardPlaceHolder = document.createElement("div")
 KnowledgeDashBoardPlaceHolder.id = "KnowledgeDashBoardPlaceHolder"
 document.body.appendChild(KnowledgeDashBoardPlaceHolder)
 ReactDOM.render(
-    <KnowledgeDashBoard/>, document.getElementById('KnowledgeDashBoardPlaceHolder'))
+    <ProSidebarProvider>
+        <KnowledgeDashBoard/>
+    </ProSidebarProvider>, document.getElementById('KnowledgeDashBoardPlaceHolder'))
