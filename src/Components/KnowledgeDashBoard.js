@@ -1,13 +1,13 @@
 /* global chrome */
 import Draggable from "react-draggable";
 import Button from '@jetbrains/ring-ui/dist/button/button';
-import {Sidebar} from "react-pro-sidebar";
-import {useProSidebar} from "react-pro-sidebar";
+// import {Sidebar} from "react-pro-sidebar";
+// import {useProSidebar} from "react-pro-sidebar";
 import {AdaptiveIsland} from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
 import Content from "@jetbrains/ring-ui/dist/island/content";
 import Heading from "@jetbrains/ring-ui/dist/heading/heading";
-import Text from "@jetbrains/ring-ui/dist/text/text";
+// import Text from "@jetbrains/ring-ui/dist/text/text";
 import {Input, Size} from "@jetbrains/ring-ui/dist/input/input";
 import {useState} from "react";
 import Img from 'react-image';
@@ -15,9 +15,13 @@ import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Popup from '@jetbrains/ring-ui/dist/popup/popup';
 
 export default function KnowledgeDashBoard() {
-    const [state, setState] = useState({pods: []});
+    const [state, setState] = useState({
+        pods: [],
+        dashBoardHidden: true,
+        buttonPosition: {x: 0, y: 0},
+    });
 
-    const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
+    /*const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
 
     function toggle() {
         if (collapsed) {
@@ -27,7 +31,7 @@ export default function KnowledgeDashBoard() {
             collapseSidebar(true);
             toggleSidebar(false);
         }
-    }
+    }*/
 
     function listPods(json) {
         const listPods = json.queryresult.pods.map((pod) => {
@@ -55,26 +59,51 @@ export default function KnowledgeDashBoard() {
             setState({pods: listPods(data)});
         });
     }
+    function onDragStart(e){
+        setState({...state,buttonPosition: {x: e.screenX, y: e.screenY}});
+    }
+    function onDragStop(e){
+        const dragX = Math.abs(e.screenX - state.buttonPosition.x);
+        const dragY = Math.abs(e.screenY - state.buttonPosition.y);
+        console.log(dragX,dragY)
+        if ( dragX > 5 || dragY > 5 ) {
+            e.stopPropagation();
+        } else {
+            setState({...state, dashBoardHidden: !state.dashBoardHidden});
+        }
+
+    }
 
     return (
         <div>
-            <Draggable>
-                <Button style={{position: "fixed", bottom: 0, right: 0, zIndex: 9999}}
-                        onClick={() => {
-                            console.log(toggled, collapsed)
-                            toggle()
-                        }}>
+            <Draggable onStart={onDragStart} onStop={onDragStop}>
+
+                <Button style={{
+                    position: "fixed",
+                    bottom: 0,
+                    right: 0,
+                    zIndex: 9999,
+                    display: state.dashBoardHidden ? "block" : "none"
+                }}
+                >
                     Click me</Button>
             </Draggable>
-            <Sidebar
-                width={"40%"}
-                collapsedWidth={"0%"}
-                defaultCollapsed={true}
-                style={{position: "fixed", bottom: "5%", right: 0, zIndex: 9999,height:"90%"}}
+            <Popup
+                style={{position: "fixed", top: 5, right: 0, zIndex: 9000}}
+                hidden={state.dashBoardHidden}
+                onCloseAttempt={() =>
+                {
+                    console.log("onCloseAttempt")
+                    setState({...state, dashBoardHidden: true})}
+                }
             >
                 <AdaptiveIsland>
                     <Header border>
                         Knowledge Dashboard
+                        <Button id={"closeButton"} onClick={(e) => {
+                            setState({...state, dashBoardHidden: true})
+                        }}>
+                            Close</Button>
                     </Header>
                     <Content>
                         <Input placeholder={"Press Enter to start searching knowledge"} size={Size.L}
@@ -103,7 +132,7 @@ export default function KnowledgeDashBoard() {
                         })}
                     </Content>
                 </AdaptiveIsland>
-            </Sidebar>
+            </Popup>
         </div>
     )
 }
