@@ -29,6 +29,7 @@ import Panel from "@jetbrains/ring-ui/dist/panel/panel";
 import Badge from "@jetbrains/ring-ui/dist/badge/badge";
 import ButtonGroup from "@jetbrains/ring-ui/dist/button-group/button-group";
 import Caption from "@jetbrains/ring-ui/dist/button-group/caption";
+import LoaderScreen from "@jetbrains/ring-ui/dist/loader-screen/loader-screen";
 export default function KnowledgeDashBoard() {
     const [state, setState] = useState({
         queryResult: [],
@@ -36,6 +37,7 @@ export default function KnowledgeDashBoard() {
         buttonPosition: {x: 0, y: 0},
         settingHidden: true,
         currentView: 'WolframAlpha',
+        loadingResult: false,
     });
 
     const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
@@ -52,30 +54,15 @@ export default function KnowledgeDashBoard() {
         }
     }
 
-    function listPods(json) {
-        const listPods = json.queryresult.pods.map((pod) => {
-            const title = pod.title;
-            const id = pod.id.replace(/:/g, '_');
-            const subpodContent = pod.subpods.map(subpod => {
-                    const url = subpod.img.src;
-                    const text = subpod.plaintext;
-                    const title = subpod.title;
-                    return {subpodUrl: url, subpodText: text,subpodTitle: title};
-                }
-            )
-            return {
-                title: title,
-                id: id,
-                content: subpodContent
-            }
-        });
-        return listPods;
-
+    function toggleLoading() {
+        setState({...state, loadingResult: !state.loadingResult});
     }
 
     function sendQueryToBackGround(query,assumption= "") {
-        chrome.runtime.sendMessage({query: query, assumption: assumption}, (response) => {
-            setState({...state, queryResult: response.queryresult});
+        setState(prevState => ({...prevState, loadingResult: true}));
+        chrome.runtime.sendMessage({freeStyleQuery: query, assumption: assumption}, (response) => {
+            setState(prevState => ({...prevState, queryResult: response.queryresult}));
+            setState(prevState => ({...prevState, loadingResult: false}));
         });
     }
     function onDragStart(e) {
@@ -284,7 +271,10 @@ export default function KnowledgeDashBoard() {
 
                                 />
                             </Panel>
-                            {renderPods()}
+                            {state.loadingResult === false ?
+                                renderPods() : <LoaderScreen
+                                    message={"Inject Wis-doom everywhere"}/>}
+
 
                         </Content>
                     }
