@@ -81,7 +81,7 @@ const getWolframFullResult = async (query,assumption= "") => {
     if (assumption !== ""){
         url.searchParams.set('assumption',assumption)
     }
-
+    url.search = decodeURI(url.search)
     console.log("url for full result is ", url)
     return fetch(url, requestOptions)
 }

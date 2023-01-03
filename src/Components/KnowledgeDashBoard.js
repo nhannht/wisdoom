@@ -30,6 +30,8 @@ import Badge from "@jetbrains/ring-ui/dist/badge/badge";
 import ButtonGroup from "@jetbrains/ring-ui/dist/button-group/button-group";
 import Caption from "@jetbrains/ring-ui/dist/button-group/caption";
 import LoaderScreen from "@jetbrains/ring-ui/dist/loader-screen/loader-screen";
+import Select from "@jetbrains/ring-ui/dist/select/select";
+
 export default function KnowledgeDashBoard() {
     const [state, setState] = useState({
         queryResult: [],
@@ -58,16 +60,18 @@ export default function KnowledgeDashBoard() {
         setState({...state, loadingResult: !state.loadingResult});
     }
 
-    function sendQueryToBackGround(query,assumption= "") {
+    function sendQueryToBackGround(query, assumption = "") {
         setState(prevState => ({...prevState, loadingResult: true}));
         chrome.runtime.sendMessage({freeStyleQuery: query, assumption: assumption}, (response) => {
             setState(prevState => ({...prevState, queryResult: response.queryresult}));
             setState(prevState => ({...prevState, loadingResult: false}));
         });
     }
+
     function onDragStart(e) {
         setState({...state, buttonPosition: {x: e.screenX, y: e.screenY}});
     }
+
     function onDragStop(e) {
         const dragX = Math.abs(e.screenX - state.buttonPosition.x);
         const dragY = Math.abs(e.screenY - state.buttonPosition.y);
@@ -106,46 +110,68 @@ export default function KnowledgeDashBoard() {
         return settingBtn.getBoundingClientRect();
     }
 
-    function renderPods() {
+    function renderAssumptions() {
         const queryResult = state.queryResult;
         console.log("query result", queryResult)
         const query = queryResult.inputstring;
         if (queryResult.success === false) return
         let assumptionRender = null;
+
+        const simpleTypes = ["Clash", "MultiClash", "SubCategory", "SubCategory", "Attribute"
+            , "Unit", "AngleUnit", "Function", "TimeAMOrPM", "DateOrder",
+            "MortalityYearDOB", "ListOrTimes", "ListOrNumber", "CoordinateSystem",
+            "I", "NumberBase", "MixedFraction", "TideStation"]
         if (queryResult.assumptions) {
-            const assumptions = queryResult.assumptions.values
-            if (assumptions.length === 1){
-                assumptionRender = <Text info>
-                    Assuming <Text>{query}</Text>
-                    as <Text>{assumptions[0].desc}</Text>.
-                </Text>
-            } else {
-                const assumming = assumptions[0];
-                const assumptionOthers = assumptions.slice(1);
-                const assummingRender = <Text>Assuming
-                    <Badge>{query}</Badge>
-                    as <Badge>{assumming.desc}</Badge>. </Text>
-                console.log("Assumptions other is", assumptionOthers)
-                const assumptionOthersRender = <ButtonGroup>
-                    {assumptionOthers.map((assumption, index) => {
-                        return <Button
-                        onClick={() =>{
+            if (Array.isArray(queryResult.assumptions)) {
+                const assumptionArray = queryResult.assumptions;
+                console.log("assumption array", assumptionArray)
+                assumptionRender = assumptionArray.map((assumptions, index) => {
+                    const type = assumptions.type;
+                    console.log(assumptions)
+                    if (simpleTypes.includes(type)) {
+                        const descriptions = assumptions.values.map((assumption) => assumption.desc);
+                        const inputs = assumptions.values.map((assumption) => assumption.input);
+                        const selectedData = descriptions.map((description, index) => ({
+                                label: description,
+                                input: inputs[index],
+                                key: index,
+                            })
+                        )
+                        return (
+                            <p><Text>
+                                Assumption {query} is {selectedData[0].label}
+                                . Other possible assuption is
+                                <Select data={selectedData.splice(1)}
+                                        onSelect={(selected) => {
+                                            sendQueryToBackGround(query, selected.input)
+                                        }
+                                        }
+                                        filter={true}
+                                        label={selectedData[0].label}
+                                />
+                            </Text></p>
+                        )
 
-                            const nextAssumption = assumption.input
-                            console.log("Next assumption is", nextAssumption)
-                            sendQueryToBackGround(query,assumption=nextAssumption)
-                        }
-                        }
-                        >{assumption.desc}</Button>
-                    })}
-                    </ButtonGroup>
-                assumptionRender = <div>
-                    <p>{assummingRender}</p>
-                    {/*New line*/}
-                    <p><Caption>Other possible assumptions:</Caption>
-                        {assumptionOthersRender}</p>
-                </div>
 
+                    }
+                })
+            } else if (queryResult.assumptions.values !== undefined) {
+                const assumptions = queryResult.assumptions.values;
+                const descriptions = assumptions.map((assumption) => assumption.desc);
+                const inputs = assumptions.map((assumption) => assumption.input);
+                const selectedData = descriptions.map((description, index) => ({
+                    label: description,
+                    input: inputs[index],
+                    key: index,
+                }))
+                assumptionRender = (
+                    <Text>
+                        Assumption {query} is <Select
+                        data={selectedData}
+                        filter={true}
+                        label={selectedData[0].label}
+                    />
+                    </Text>)
             }
         }
         return (
@@ -271,10 +297,10 @@ export default function KnowledgeDashBoard() {
 
                                 />
                             </Panel>
-                            {state.loadingResult === false ?
-                                renderPods() : <LoaderScreen
-                                    message={"Inject Wis-doom everywhere"}/>}
-
+                            {/*{state.loadingResult === false ?
+                                renderAssumptions() : <LoaderScreen
+                                    message={"Inject Wis-doom everywhere"}/>}*/}
+                            {renderAssumptions()}
 
                         </Content>
                     }
