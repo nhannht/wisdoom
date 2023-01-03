@@ -139,16 +139,15 @@ export default function KnowledgeDashBoard() {
                         )
                         return (
                             <p><Text>
-                                Assumption {query} is {selectedData[0].label}
-                                . Other possible assuption is
-                                <Select data={selectedData.splice(1)}
-                                        onSelect={(selected) => {
-                                            sendQueryToBackGround(query, selected.input)
-                                        }
-                                        }
-                                        filter={true}
-                                        label={selectedData[0].label}
-                                />
+                                Assumption {query} is <Select data={selectedData.splice(1)}
+                                                              onSelect={(selected) => {
+                                                                  sendQueryToBackGround(query, selected.input)
+                                                              }
+                                                              }
+                                                              size={Select.Size.S}
+                                                              filter={true}
+                                                              label={selectedData[0].label}
+                            /> <Badge>{type}</Badge>
                             </Text></p>
                         )
 
@@ -157,6 +156,7 @@ export default function KnowledgeDashBoard() {
                 })
             } else if (queryResult.assumptions.values !== undefined) {
                 const assumptions = queryResult.assumptions.values;
+                const assumptionsType = queryResult.assumptions.type;
                 const descriptions = assumptions.map((assumption) => assumption.desc);
                 const inputs = assumptions.map((assumption) => assumption.input);
                 const selectedData = descriptions.map((description, index) => ({
@@ -170,14 +170,20 @@ export default function KnowledgeDashBoard() {
                         data={selectedData}
                         filter={true}
                         label={selectedData[0].label}
+                        onSelect={(selected) => {
+                            sendQueryToBackGround(query, selected.input)
+                        }
+                        }
+                        size={Select.Size.S}
                     />
+                        <Badge>{assumptionsType}</Badge>
                     </Text>)
+
             }
         }
         return (
             <div>
-                {assumptionRender && assumptionRender
-                }
+                {assumptionRender}
             </div>
         )
 
