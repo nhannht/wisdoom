@@ -1,20 +1,46 @@
 /*global chrome*/
 // Put all the javascript code here, that you want to execute in background.
+// function apiSetup() {
+//     chrome.storage.sync.get('apiKey', async (result) => {
+//         console.log('init background script')
+//         if (typeof result.apiKey !== "undefined" || result.apiKey === "") {
+//             api = result.apiKey
+//         } else {
+//             chrome.storage.sync.set({'apiKey': 'K8AKR2-62T7EH48V5'})
+//             api = (await chrome.storage.sync.get('apiKey')).apiKey
+//
+//         }
+//     })
+// }
+// apiSetup();
+// For development only
 let api = 0
+// chrome.storage.sync.get("apiKey", (result) => {
+//     console.log("current apiKey in the storage is " + result.apiKey)
+// })
+function addWolframKayChangeListener () {
 
-function apiSetup() {
-    chrome.storage.sync.get('apiKey', async (result) => {
-        console.log('init background script')
-        if (typeof result.apiKey !== "undefined" || result.apiKey === "") {
-            api = result.apiKey
-        } else {
-            chrome.storage.sync.set({'apiKey': 'K8AKR2-62T7EH48V5'})
-            api = (await chrome.storage.sync.get('apiKey')).apiKey
-
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        console.log(changes)
+        if (changes.apiKey) {
+            // api = changes.apiKey.newValue
         }
+        console.log("we just change apiKey in sync storage,this is ", changes.apiKey.newValue)
+    })
+    console.log("We just add listener for storage change")
+    // setTimeout(()=> console.log("wait 5s"),5000);
+}
+addWolframKayChangeListener()
+
+function setDefaultWolframKey () {
+    chrome.storage.sync.set({apiKey: 'K8AKR2-62T7EH48V5'}, () => {
+        chrome.storage.sync.get("apiKey", (result) => {
+            api = result.apiKey
+        })
+
     })
 }
-apiSetup();
+setDefaultWolframKey()
 
 function saveApiListener() {
     chrome.runtime.onMessage.addListener(async (msg) => {
@@ -32,22 +58,34 @@ function saveApiListener() {
     })
 }
 
-saveApiListener();
+// saveApiListener();
 
-const getWolframFullResult = async (query) => {
-    var myHeaders = new Headers();
+const getWolframFullResult = async (query,assumption= "") => {
+    var myHeaders =await new Headers();
 
-    var requestOptions = {
+    var requestOptions =  {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
     };
+
+    // wait api was change before do anything
     const q = encodeURIComponent(query);
-    console.log("Api is ", api)
-    let url = `http://api.wolframalpha.com/v2/query?appid=${api}&input=${q}&output=json`
+    console.log("the api using in this query is ",api)
+    let baseUrl = 'https://api.wolframalpha.com/'
+    let apiPath = 'v2/query?'
+    let url = new URL(apiPath, baseUrl)
+    url.searchParams.set('appid',api )
+    url.searchParams.set('input', q)
+    url.searchParams.set('output', 'json')
+    if (assumption !== ""){
+        url.searchParams.set('assumption',assumption)
+    }
+
     console.log("url for full result is ", url)
     return fetch(url, requestOptions)
 }
+
 
 function createContextMenu() {
     chrome.contextMenus.create({
@@ -59,22 +97,19 @@ function createContextMenu() {
 }
 
 createContextMenu();
-
+let oldFreeStyleQuery = ''
 function freeInputListener() {
     chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
-        if (msg.freeStyleQuery) {
-            console.log("We received free style query")
-            getWolframFullResult(msg.freeStyleQuery).then(res => res.json()).then(json => {
-                console.log(json)
-                sendResponse( {result: JSON.stringify(json)})
+        getWolframFullResult(msg.freeStyleQuery, msg.assumption).then((response) => {
+            response.json().then((result) => {
+                sendResponse(result)
             })
-        }
+        })
         return true
     })
 }
-
 freeInputListener();
-function downloadUrl () {
+function downloadUrl() {
     chrome.runtime.onMessage.addListener((msg) => {
         if (msg.urlDownload) {
             chrome.downloads.download({
@@ -84,7 +119,6 @@ function downloadUrl () {
     })
 }
 downloadUrl()
-
 function getResultListener() {
     chrome.contextMenus.onClicked.addListener(
         async function (info, tab) {

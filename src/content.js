@@ -19,7 +19,6 @@ chrome.runtime.onMessage.addListener((msg) => {
 })
 
 // Render KnowledgeDashBoard
-
 const KnowledgeDashBoardPlaceHolder = document.createElement("div")
 KnowledgeDashBoardPlaceHolder.id = "KnowledgeDashBoardPlaceHolder"
 document.body.appendChild(KnowledgeDashBoardPlaceHolder)
