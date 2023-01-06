@@ -23,14 +23,17 @@ import alertService from '@jetbrains/ring-ui/dist/alert-service/alert-service';
 import checkmarkIcon from '@jetbrains/icons/checkmark';
 import Panel from "@jetbrains/ring-ui/dist/panel/panel";
 import Badge from "@jetbrains/ring-ui/dist/badge/badge";
-import ImageMenuDropDown from "./ImageMenuDropDown";
+import ImageActions from "./ImageActions";
 import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
 import 'rc-dropdown/assets/index.css';
 import {Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import Link from "@jetbrains/ring-ui/dist/link/link";
-import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
 import {ControlsHeight, ControlsHeightContext} from "@jetbrains/ring-ui/dist/global/controls-height";
 import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
+import SearchIcon from '@jetbrains/icons/search';
+import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
+import ReactTooltip from "react-tooltip";
+import Tooltip from "@jetbrains/ring-ui/dist/tooltip/tooltip";
 // BOOKMARK end of imports
 // DraggableButton.propTypes = {
 //     onStart: PropTypes.func,
@@ -57,7 +60,7 @@ export default function KnowledgeDashBoard() {
         loadingResult: false,
     });
 
-    const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
+    const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
 
     function toggleSideBar() {
         if (collapsed) {
@@ -114,16 +117,6 @@ export default function KnowledgeDashBoard() {
         "<svg fill=\"#000000\" width=\"800px\" height=\"800px\" viewBox=\"0 0 24 24\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"><title>Wolfram icon</title><path d=\"M20.105 12.001l3.307-3.708-4.854-1.059.495-4.944-4.55 1.996L12 0 9.495 4.287 4.947 2.291l.494 4.944L.587 8.289l3.305 3.707-3.305 3.713 4.854 1.053-.5 4.945 4.553-1.994L12 24l2.504-4.287 4.55 1.994-.495-4.938 4.854-1.06-3.308-3.708zm1.605 2.792l-2.861-.982-1.899-2.471 2.526.942 2.234 2.511zm.459-6.096l-2.602 2.918-3.066-1.141 1.844-2.612 3.824.835zm-4.288-1.324l-1.533 2.179.088-3.162 1.788-2.415-.343 3.398zm-3.304-2.399l3.091-1.354L15.9 5.998l-2.943 1.049 1.62-2.073zm1.187 1.772l-.096 3.652-3.341 1.12V7.969l3.437-1.223zM12 1.308l1.969 3.371L12 7.199l-1.971-2.521L12 1.308zM9.423 4.974l1.619 2.072-2.948-1.048L6.332 3.62l3.091 1.354zm2.245 2.995v3.549l-3.335-1.12-.102-3.652 3.437 1.223zM7.564 6.39l.086 3.162-1.532-2.179-.341-3.397L7.564 6.39zM1.83 8.692l3.824-.83 1.839 2.612-3.065 1.136L1.83 8.692zm2.694 3.585l2.526-.937-1.9 2.471-2.861.977 2.235-2.511zm-2.093 3.159l2.929-1 3.045.896-2.622.837-3.352-.733zm3.28 5.212l.392-3.896 3.111-.982.082 3.31-3.585 1.568zm3.691-5.708l-3.498-1.03 2.226-2.892 3.335 1.126-2.063 2.796zm2.266 7.191l-1.711-2.934-.066-2.771 1.777 2.597v3.108zm-1.73-6.8L12 12.532l2.063 2.799L12 18.336l-2.062-3.005zm4.104 3.866l-1.715 2.934v-3.107l1.782-2.597-.067 2.77zm-1.514-7.052l3.341-1.126 2.221 2.892-3.499 1.03-2.063-2.796zm2.175 6.935l.077-3.31 3.116.982.386 3.901-3.579-1.573zm3.514-2.912l-2.625-.837 3.049-.896 2.928 1.003-3.352.73z\"/></svg>"
 
 
-    function toggleSettings() {
-        console.log("toggleSettings")
-        setState({...state, settingHidden: !state.settingHidden});
-    }
-
-    function settingBtnLocation() {
-        const settingBtn = document.getElementById("settingButton");
-        return settingBtn.getBoundingClientRect();
-    }
-
     function renderPods() {
         const queryResult = state.queryResult;
         if (queryResult.success === false) return;
@@ -140,20 +133,27 @@ export default function KnowledgeDashBoard() {
                 const width = subpod.img.width;
                 return (
 
-                    <p>
-                        <H4 key={index}>
-                            {subpodTitle}
-                        </H4>
-                        <Img src={subpodImage}
-                             height={height}
-                             width={width}
-                             key={subpodImage}
-                             loader={<Loader/>}
-                             unloader={<Text>Image not found</Text>}
-
-                        />
-                        <ImageMenuDropDown subpod={subpod}/>
-                    </p>
+                    <Grid><Row>
+                        <Col>
+                            <Row><H4 key={index}>
+                                {subpodTitle}
+                            </H4></Row>
+                            {/*TODO make those image ease in out*/}
+                            <Row><Img src={subpodImage}
+                                      height={height}
+                                      width={width}
+                                      key={subpodImage}
+                                      loader={<Loader/>}
+                                      unloader={<Text>Image not found</Text>}
+                                      style={{animation: "slideIn 1s forwards"}}
+                            /></Row>
+                        </Col>
+                        <Col xs={12}>
+                            <Row end={"xs"}>
+                                <Col xs={6}><ImageActions subpod={subpod}/></Col>
+                            </Row>
+                        </Col>
+                    </Row></Grid>
                 )
             })
             return (
@@ -275,8 +275,8 @@ export default function KnowledgeDashBoard() {
         <div>
             <DraggableButton
                 title={"Wisdoom!!!!!"}
-                dataTip={"Wisdoom!!!"}
                 onStart={onDragStart} onStop={onDragStop} state={state}/>
+
             <Sidebar
                 defaultCollapsed={true}
                 collapsedWidth={0}
@@ -305,35 +305,49 @@ export default function KnowledgeDashBoard() {
 
                         </a>
                         <Tray>
-                            <TrayIcon title={"Wolfram Alpha"}
-                                      icon={wolframIcon}
-                                      onClick={() => {
-                                          setState({...state, currentView: "WolframAlpha"})
-                                      }
-                                      }/>
+                            <TrayIcon
+                                icon={wolframIcon}
+                                data-tip={"Wolfram Alpha"}
+                                data-for={"wolfram-alpha-tooltip"}
+                                onClick={() => {
+                                    setState({...state, currentView: "WolframAlpha"})
+                                }
+                                }/>
+                            <ReactTooltip id={"wolfram-alpha-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
 
                             <TrayIcon
-                                title={'Hide Knowledge Dashboard'}
                                 icon={collapseIcon}
+                                data-tip={"Collapse"}
+                                data-for={"collapse-tooltip"}
                                 id={"closeButton"} onClick={(e) => {
                                 toggleSideBar();
                             }}>
                             </TrayIcon>
+
+                            <ReactTooltip id={"collapse-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
                             <TrayIcon
-                                title={'Settings'}
                                 icon={settingIcon}
+                                data-tip={"Settings"}
+                                data-for={"settings-tooltip"}
                                 onClick={(e) => {
                                     setState({...state, currentView: "Settings"});
                                 }}
                                 id={"settingButton"}
                             >
                             </TrayIcon>
+                            <ReactTooltip id={"settings-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
                             <TrayIcon
-                                title={'Source code'}
+                                data-tip={"Source code"}
+                                data-for={"source-code-tooltip"}
                                 icon={starIcon}></TrayIcon>
+                            <ReactTooltip id={"source-code-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
                             <TrayIcon
-                                title={'Give vote in product hunt'}
-                                icon={likeIcon}></TrayIcon>
+                                data-tip={"Vote"}
+                                data-for={"vote-tooltip"}
+                                icon={likeIcon}
+                            ></TrayIcon>
+
+                            <ReactTooltip id={"vote-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
                         </Tray>
 
                     </Header>
@@ -362,50 +376,72 @@ export default function KnowledgeDashBoard() {
                     }
 
                     {state.currentView === "WolframAlpha" &&
-                        <Panel
-
+                        <div
                             style={{
+                                marginLeft:"5%",
+                                marginRight:"5%",
+                                marginBottom:"5%",
                                 backgroundColor: "rgb(0,0,0,0)", border: "none", boxShadow: "none"
 
                             }}
                         >
-                            <Badge>Wolfram</Badge>
-                            <Grid>
-                                <Row between={"xs"}>
-                                    <Col xs={2}><ControlsHeightContext.Provider value={ControlsHeight.S}>
-                                        <Input
+                            <Grid><Row>
+                                <Col>
+                                    <Row start={"xs"}>
+                                        {/* DONE add button and icon for this input query*/}
+                                        {/*TODO quick answer when user typing*/}
+                                        {/*TODO render what you mean*/}
+                                        <Col><Input
+                                            id={"wolframQueryInput"}
                                             placeholder={"Press Enter to start searching knowledge"} size={Size.L}
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                     sendQueryToBackGround(e.target.value)
                                                 }
-                                            }
-                                            }
-                                        /></ControlsHeightContext.Provider></Col>
-                                    {/*DONE Add a inline loader that remind user that the query is being processed*/}
-                                    <Col
-                                        xs={2}
-                                    >
-                                        <div
-                                        style={{display: state.loadingResult ? "block" : "none",
-                                        animation: "transition 1s ease-in-out",
-                                        }}
-                                        >
-                                            <div className="ring-loader-inline"/>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </Grid>
+                                            }}
+                                        /></Col>
+                                        <Col>
+                                            <ButtonGroup split={true}
+                                                         id={"wisdoom-wolfram-search-button"}>
+                                                <div>
+                                                    <Button
+                                                        id={"wisdoom-wolfram-search-button"}
+                                                        data-for={"wisdoom-wolfram-search-button-tooltip"}
+                                                        data-tip={"Search"}
+                                                        icon={SearchIcon} onClick={() => {
+                                                        sendQueryToBackGround(document.getElementById("wolframQueryInput").value)
+
+                                                    }}> </Button>
+                                                    <ReactTooltip
+                                                        id={"wisdoom-wolfram-search-button-tooltip"}
+                                                        place={"top"} effect={"solid"}/>
+                                                </div>
+
+
+                                            </ButtonGroup></Col>
+                                    </Row></Col>
+                                {/*DONE Add a inline loader that remind user that the query is being processed*/}
+                                <Col id={"wolframInlineLoaderQuery"} xs={2}>
+                                    <Row end={"xs"}>
+                                        <Col xs={1}>
+                                            <div style={{display: state.loadingResult ? "block" : "none",}}>
+                                                <div className="ring-loader-inline"/>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Col></Row></Grid>
                             {/*{state.loadingResult === false ?
                                 renderAssumptions() : <LoaderScreen
                                     message={"Inject Wis-doom everywhere"}/>}*/}
                             {renderAssumptions()}
                             {renderPods()}
 
-                        </Panel>
+                        </div>
                     }
                 </Island>
             </Sidebar>
+
+
         </div>
     )
 }

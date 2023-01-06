@@ -18,9 +18,11 @@ export default function DraggableButton(props) {
                      bottom: "20%", right: "20%"
                 }}
             >
-                <ThemeProvider theme={Theme.DARK}><Button
+                <ThemeProvider theme={Theme.DARK}>
+                    <Button
 
-                    data-tip={props.dataTip}
+
+                    data-tip={"Knowledge DashBoard"}
                     style={{
                         position: "fixed",
                         display: props.state.dashBoardHidden ? "block" : "none"
@@ -38,11 +40,9 @@ export default function DraggableButton(props) {
                         margin={2}/>
                 </Button>
                 </ThemeProvider>
-                <ReactTooltip
-                    type={"dark"}
-                    place={"left"}
+                <ReactTooltip place={"top"} effect={"solid"}/>
+                </div>
 
-                /></div>
         </Draggable>)
         ;
 }

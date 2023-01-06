@@ -11,7 +11,7 @@ import AdaptiveIsland from "@jetbrains/ring-ui/dist/island/island";
 import Content from "@jetbrains/ring-ui/dist/island/content";
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
-import ImageMenuDropDown from "./ImageMenuDropDown";
+import ImageActions from "./ImageActions";
 
 export function GoogleTabs(props) {
     const json = props.data;
@@ -81,7 +81,7 @@ export function GoogleTabs(props) {
                                          key={subpod.subpodUrl}
                                     />
                                     <br></br>
-                                    <ImageMenuDropDown subpod={subpod}/>
+                                    <ImageActions subpod={subpod}/>
 
                                 </div>
                             )
