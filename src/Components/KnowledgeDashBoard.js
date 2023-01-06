@@ -1,50 +1,65 @@
 /* global chrome */
-import Draggable from "react-draggable";
+// BOOKMARK import here
 import Button from '@jetbrains/ring-ui/dist/button/button';
 import {Sidebar, useProSidebar} from "react-pro-sidebar";
 import Island from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
 import Content from "@jetbrains/ring-ui/dist/island/content";
-import Heading, {H1, H2, H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
+import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
 import {Input, Size} from "@jetbrains/ring-ui/dist/input/input";
 import {useState} from "react";
 import Img from 'react-image';
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
-// import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
 import Tray from "@jetbrains/ring-ui/dist/header/tray";
 import TrayIcon from '@jetbrains/ring-ui/dist/header/tray-icon';
 import settingIcon from '@jetbrains/icons/settings';
 import collapseIcon from '@jetbrains/icons/collapse';
 import starIcon from '@jetbrains/icons/star-empty';
 import likeIcon from '@jetbrains/icons/vote-empty';
-// import Icon from '@jetbrains/ring-ui/dist/icon/icon';
 import Logo from "@jetbrains/ring-ui/dist/header/logo";
-import Popup from '@jetbrains/ring-ui/dist/popup/popup';
 import Text from '@jetbrains/ring-ui/dist/text/text';
-import Icon from '@jetbrains/ring-ui/dist/icon/icon';
 import '@jetbrains/icons/file-js'
 import alertService from '@jetbrains/ring-ui/dist/alert-service/alert-service';
 import checkmarkIcon from '@jetbrains/icons/checkmark';
 import Panel from "@jetbrains/ring-ui/dist/panel/panel";
 import Badge from "@jetbrains/ring-ui/dist/badge/badge";
-import ButtonGroup from "@jetbrains/ring-ui/dist/button-group/button-group";
-import Caption from "@jetbrains/ring-ui/dist/button-group/caption";
-import LoaderScreen from "@jetbrains/ring-ui/dist/loader-screen/loader-screen";
-import Select from "@jetbrains/ring-ui/dist/select/select";
-
+import ImageMenuDropDown from "./ImageMenuDropDown";
+import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
+import 'rc-dropdown/assets/index.css';
+import {Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
+import Link from "@jetbrains/ring-ui/dist/link/link";
+import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
+import {ControlsHeight, ControlsHeightContext} from "@jetbrains/ring-ui/dist/global/controls-height";
+import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
+// BOOKMARK end of imports
+// DraggableButton.propTypes = {
+//     onStart: PropTypes.func,
+//     onStop: PropTypes.func,
+//     state: PropTypes.shape({
+//         dashBoardHidden: PropTypes.bool,
+//         loadingResult: PropTypes.bool,
+//         settingHidden: PropTypes.bool,
+//         currentView: PropTypes.string,
+//         queryResult: PropTypes.arrayOf(PropTypes.any),
+//         buttonPosition: PropTypes.shape({x: PropTypes.number, y: PropTypes.number})
+//     })
+// };
 export default function KnowledgeDashBoard() {
+
+// BOOKMARK state of this file
     const [state, setState] = useState({
         queryResult: [],
         dashBoardHidden: true,
         buttonPosition: {x: 0, y: 0},
         settingHidden: true,
         currentView: 'WolframAlpha',
+        loadingDraggableButton: false,
         loadingResult: false,
     });
 
     const {collapseSidebar, toggleSidebar, collapsed, toggled} = useProSidebar();
 
-    function toggle() {
+    function toggleSideBar() {
         if (collapsed) {
             toggleSidebar(true);
             collapseSidebar(false);
@@ -57,7 +72,7 @@ export default function KnowledgeDashBoard() {
     }
 
     function toggleLoading() {
-        setState({...state, loadingResult: !state.loadingResult});
+        setState({...state, loadingResult: !state.loadingDraggableButton});
     }
 
     function sendQueryToBackGround(query, assumption = "") {
@@ -79,7 +94,7 @@ export default function KnowledgeDashBoard() {
         if (dragX > 5 || dragY > 5) {
             e.stopPropagation();
         } else {
-            toggle();
+            toggleSideBar();
         }
 
     }
@@ -101,13 +116,58 @@ export default function KnowledgeDashBoard() {
 
     function toggleSettings() {
         console.log("toggleSettings")
-
         setState({...state, settingHidden: !state.settingHidden});
     }
 
     function settingBtnLocation() {
         const settingBtn = document.getElementById("settingButton");
         return settingBtn.getBoundingClientRect();
+    }
+
+    function renderPods() {
+        const queryResult = state.queryResult;
+        if (queryResult.success === false) return;
+        const query = queryResult.inputstring;
+        const pods = queryResult.pods;
+        let renderPods = null;
+        if (queryResult.pods === undefined) return;
+        renderPods = pods.map((pod, index) => {
+            const subpodRender = pod.subpods.map((subpod, index) => {
+                const subpodTitle = subpod.title;
+                const subpodPlainText = subpod.plaintext;
+                const subpodImage = subpod.img.src;
+                const height = subpod.img.height;
+                const width = subpod.img.width;
+                return (
+
+                    <p>
+                        <H4 key={index}>
+                            {subpodTitle}
+                        </H4>
+                        <Img src={subpodImage}
+                             height={height}
+                             width={width}
+                             key={subpodImage}
+                             loader={<Loader/>}
+                             unloader={<Text>Image not found</Text>}
+
+                        />
+                        <ImageMenuDropDown subpod={subpod}/>
+                    </p>
+                )
+            })
+            return (
+                <Panel key={index}>
+                    <H3>
+                        <Text>{pod.title}</Text>
+                    </H3>
+                    {subpodRender}
+                </Panel>
+            )
+        })
+        return renderPods;
+
+
     }
 
     function renderAssumptions() {
@@ -117,6 +177,7 @@ export default function KnowledgeDashBoard() {
         if (queryResult.success === false) return
         let assumptionRender = null;
 
+
         const simpleTypes = ["Clash", "MultiClash", "SubCategory", "SubCategory", "Attribute"
             , "Unit", "AngleUnit", "Function", "TimeAMOrPM", "DateOrder",
             "MortalityYearDOB", "ListOrTimes", "ListOrNumber", "CoordinateSystem",
@@ -124,7 +185,6 @@ export default function KnowledgeDashBoard() {
         if (queryResult.assumptions) {
             if (Array.isArray(queryResult.assumptions)) {
                 const assumptionArray = queryResult.assumptions;
-                console.log("assumption array", assumptionArray)
                 assumptionRender = assumptionArray.map((assumptions, index) => {
                     const type = assumptions.type;
                     console.log(assumptions)
@@ -137,17 +197,29 @@ export default function KnowledgeDashBoard() {
                                 key: index,
                             })
                         )
+                        const menuItemRender = selectedData.splice(1).map((data) => {
+                            return (
+                                <MenuItem key={data.key}
+                                          onClick={() => {
+                                              console.log("clicked", data.input)
+                                              sendQueryToBackGround(query, data.input)
+                                          }}>
+                                    {data.label}
+                                </MenuItem>
+                            )
+                        })
                         return (
-                            <p><Text>
-                                Assuming {query} : <Select data={selectedData.splice(1)}
-                                                              onSelect={(selected) => {
-                                                                  sendQueryToBackGround(query, selected.input)
-                                                              }
-                                                              }
-                                                              filter={true}
-                                                              label={selectedData[0].label}
-                            /> <Badge>{type}</Badge>
-                            </Text></p>
+                            <p>
+                                Assuming <Link>{selectedData[0].label}</Link>, other assumptions
+                                <Menu
+                                    closeOnClick={true}
+                                >
+                                    <SubMenu label={type}>
+                                        {menuItemRender}
+                                    </SubMenu>
+
+                                </Menu>
+                            </p>
                         )
 
 
@@ -163,18 +235,30 @@ export default function KnowledgeDashBoard() {
                     input: inputs[index],
                     key: index,
                 }))
+                const menuItemRender = selectedData.splice(1).map((data) => {
+                    return (
+                        <MenuItem
+
+                            key={data.key}
+                            onClick={() => {
+                                console.log("clicked", data.input)
+                                sendQueryToBackGround(query, data.input)
+                            }}>
+                            {data.label}
+                        </MenuItem>
+                    )
+                })
                 assumptionRender = (
-                    <Text>
-                        Assuming {query} : <Select
-                        data={selectedData}
-                        filter={true}
-                        label={selectedData[0].label}
-                        onSelect={(selected) => {
-                            sendQueryToBackGround(query, selected.input)
-                        }
-                        }
-                    />       <Badge>{assumptionsType}</Badge>
-                    </Text>)
+                    <p>
+                        Assuming <Link>{selectedData[0].label}</Link>, other assumptions
+                        <Menu
+                            closeOnClick={true}
+                        >
+
+                            {menuItemRender}
+
+                        </Menu></p>)
+
 
             }
         }
@@ -189,18 +273,10 @@ export default function KnowledgeDashBoard() {
 
     return (
         <div>
-            <Draggable onStart={onDragStart} onStop={onDragStop}>
-
-                <Button style={{
-                    position: "fixed",
-                    bottom: 0,
-                    right: 0,
-                    zIndex: 9999,
-                    display: state.dashBoardHidden ? "block" : "none"
-                }}
-                >
-                    Click me</Button>
-            </Draggable>
+            <DraggableButton
+                title={"Wisdoom!!!!!"}
+                dataTip={"Wisdoom!!!"}
+                onStart={onDragStart} onStop={onDragStop} state={state}/>
             <Sidebar
                 defaultCollapsed={true}
                 collapsedWidth={0}
@@ -212,15 +288,19 @@ export default function KnowledgeDashBoard() {
                     bottom: "5%",
                     right: 0,
                     height: "90%",
+                    // set right border visible
+                    border: "1px solid #e0e0e0",
                 }}>
                 <Island
-                    style={{border: "none", boxShadow: "none"}}
+                    style={{
+                        border: "none", boxShadow: "none",
+                    }}
                 >
                     <Header>
                         <a title={"Huggin and Munnin"}>
                             <Logo
                                 glyph={brainIcon}
-                                onClick={toggle}/>
+                                onClick={toggleSideBar}/>
 
 
                         </a>
@@ -236,7 +316,7 @@ export default function KnowledgeDashBoard() {
                                 title={'Hide Knowledge Dashboard'}
                                 icon={collapseIcon}
                                 id={"closeButton"} onClick={(e) => {
-                                toggle();
+                                toggleSideBar();
                             }}>
                             </TrayIcon>
                             <TrayIcon
@@ -282,30 +362,47 @@ export default function KnowledgeDashBoard() {
                     }
 
                     {state.currentView === "WolframAlpha" &&
-                        <Content
+                        <Panel
+
                             style={{
                                 backgroundColor: "rgb(0,0,0,0)", border: "none", boxShadow: "none"
 
                             }}
                         >
-                            <Badge>Wolfram Beta</Badge>
-                            <Panel>
-                                <Input placeholder={"Press Enter to start searching knowledge"} size={Size.L}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter') {
-                                               sendQueryToBackGround(e.target.value)
-                                           }
-                                       }
-                                       }
-
-                                />
-                            </Panel>
+                            <Badge>Wolfram</Badge>
+                            <Grid>
+                                <Row between={"xs"}>
+                                    <Col xs={2}><ControlsHeightContext.Provider value={ControlsHeight.S}>
+                                        <Input
+                                            placeholder={"Press Enter to start searching knowledge"} size={Size.L}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    sendQueryToBackGround(e.target.value)
+                                                }
+                                            }
+                                            }
+                                        /></ControlsHeightContext.Provider></Col>
+                                    {/*DONE Add a inline loader that remind user that the query is being processed*/}
+                                    <Col
+                                        xs={2}
+                                    >
+                                        <div
+                                        style={{display: state.loadingResult ? "block" : "none",
+                                        animation: "transition 1s ease-in-out",
+                                        }}
+                                        >
+                                            <div className="ring-loader-inline"/>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Grid>
                             {/*{state.loadingResult === false ?
                                 renderAssumptions() : <LoaderScreen
                                     message={"Inject Wis-doom everywhere"}/>}*/}
                             {renderAssumptions()}
+                            {renderPods()}
 
-                        </Content>
+                        </Panel>
                     }
                 </Island>
             </Sidebar>

@@ -11,8 +11,7 @@ import AdaptiveIsland from "@jetbrains/ring-ui/dist/island/island";
 import Content from "@jetbrains/ring-ui/dist/island/content";
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
-import Icon from '@jetbrains/ring-ui/dist/icon/icon';
-import copyIcon from '@jetbrains/icons/copy';
+import ImageMenuDropDown from "./ImageMenuDropDown";
 
 export function GoogleTabs(props) {
     const json = props.data;
@@ -82,33 +81,7 @@ export function GoogleTabs(props) {
                                          key={subpod.subpodUrl}
                                     />
                                     <br></br>
-                                    <Dropdown anchor={
-                                        <Icon glyph={copyIcon} />
-                                    } style={{float: 'right'}}>
-                                        <PopupMenu closeOnSelect
-                                                   data={[{label: 'Copy Image Url'},
-                                                       {label: 'Copy Image'},
-                                                       {label: 'Save Image'},
-                                                       {label: 'Copy Text'},
-                                                   ]}
-                                                   onSelect={async event => {
-                                                       if (event.label === 'Save Image') {
-                                                              await chrome.runtime.sendMessage({urlDownload: subpod.subpodUrl})
-
-                                                       }
-                                                       if (event.label === 'Copy Text') {
-                                                           await navigator.clipboard.writeText(subpod.subpodText);
-                                                       }
-                                                       if (event.label === 'Copy Image Url') {
-                                                           await navigator.clipboard.writeText(subpod.subpodUrl);
-                                                       }
-
-                                                   }}
-
-                                        />
-
-
-                                    </Dropdown>
+                                    <ImageMenuDropDown subpod={subpod}/>
 
                                 </div>
                             )
