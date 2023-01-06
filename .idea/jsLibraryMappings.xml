@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{huginn-and-muninn/node_modules}" />
+    <file url="file://$PROJECT_DIR$/node_modules/@jetbrains/ring-ui/dist" libraries="{huginn-and-muninn/node_modules}" />
+    <file url="PROJECT" libraries="{@types/chrome, @types/firefox-webext-browser, huginn-and-muninn/node_modules}" />
+    <includedPredefinedLibrary name="HTTP Pre-Request and Response Handler" />
+  </component>
+</project>

@@ -88,7 +88,7 @@ const getWolframFullResult = async (query,
     }
     url.searchParams.set('podstate', podstate)
     url.search = decodeURI(url.search)
-    /*console.log*/("url for full result is ", url)
+    // /*console.log*/("url for full result is ", url)
     return fetch(url, requestOptions)
 }
 
