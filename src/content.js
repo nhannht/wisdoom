@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import '@jetbrains/ring-ui/dist/style.css';
 // SimpleContent component is wrapper around ContentLayout component
 // It is used to display content in the popup
-import {GoogleTabs} from "./Components/GoogleTabs";
+// import {GoogleTabs} from "./Components/GoogleTabs";
 import KnowledgeDashBoard from "./Components/KnowledgeDashBoard";
 import {ProSidebarProvider} from "react-pro-sidebar";
 // import * as cheerio from 'cheerio';

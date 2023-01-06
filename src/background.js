@@ -60,7 +60,10 @@ function saveApiListener() {
 
 // saveApiListener();
 
-const getWolframFullResult = async (query,assumption= "") => {
+const getWolframFullResult = async (query,
+                                    assumption ,
+                                    reinterpret="true",
+                                    podstate) => {
     var myHeaders =await new Headers();
 
     var requestOptions =  {
@@ -71,18 +74,21 @@ const getWolframFullResult = async (query,assumption= "") => {
 
     // wait api was change before do anything
     const q = encodeURIComponent(query);
-    console.log("the api using in this query is ",api)
+    // console.log("the api using in this query is ",api)
     let baseUrl = 'https://api.wolframalpha.com/'
     let apiPath = 'v2/query?'
     let url = new URL(apiPath, baseUrl)
     url.searchParams.set('appid',api )
     url.searchParams.set('input', q)
     url.searchParams.set('output', 'json')
-    if (assumption !== ""){
-        url.searchParams.set('assumption',assumption)
+    url.searchParams.set('reinterpret', 'true')
+    url.searchParams.set('assumption', assumption)
+    if (reinterpret === false){
+        url.searchParams.set('reinterpret','false')
     }
+    url.searchParams.set('podstate', podstate)
     url.search = decodeURI(url.search)
-    console.log("url for full result is ", url)
+    /*console.log*/("url for full result is ", url)
     return fetch(url, requestOptions)
 }
 
@@ -100,7 +106,11 @@ createContextMenu();
 let oldFreeStyleQuery = ''
 function freeInputListener() {
     chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
-        getWolframFullResult(msg.freeStyleQuery, msg.assumption).then((response) => {
+        getWolframFullResult(msg.freeStyleQuery,
+            msg.assumption,
+            msg.reinterpret,
+            msg.podstate
+        ).then((response) => {
             response.json().then((result) => {
                 sendResponse(result)
             })
@@ -127,7 +137,7 @@ function getResultListener() {
             const result = await response.clone().json()
             const text = await response.clone().text()
 
-            console.log(result.queryresult)
+            /*console.log*/(result.queryresult)
             if (result.queryresult.success === "false") {
                 if (result.queryresult.didyoumean) {
                     await chrome.tabs.sendMessage(tab.id, {"didyoumean": result.queryresult.didyoumean})
@@ -186,7 +196,7 @@ function googleResultListener() {
             oldSearch = query
             const result = await getWolframFullResult(url.searchParams.get("q"))
             const resultText = await result.clone().text()
-            console.log("We got result from wolfram alpha")
+            /*console.log*/("We got result from wolfram alpha")
             await chrome.tabs.sendMessage(tabId, {"google": resultText});
         }
     })
@@ -209,7 +219,7 @@ chrome.webNavigation.onCommitted.addListener((details) => {
             oldSearch = query
             const result = await getWolframFullResult(url.searchParams.get("q"))
             const resultText = await result.clone().text()
-            console.log("We got result from wolfram alpha")
+            /*console.log*/("We got result from wolfram alpha")
             await chrome.tabs.sendMessage(details.tabId, {"google": resultText});
 
             chrome.webNavigation.onCompleted.removeListener(onComplete);
