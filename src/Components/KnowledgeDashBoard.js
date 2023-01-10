@@ -47,14 +47,16 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 // };
 /**
  * @desc This is Knowledge Dashboard
- * @module KnowledgeDashBoard
+ * @module
+ * @component
  * @returns {JSX.Element}
- * @constructor
- * @export module:KnowledgeDashBoard
  * @todo How to design a program
  */
 export default function KnowledgeDashBoard() {
 // BOOKMARK state of this file
+    /**
+     * @desc This is the state of this file
+     */
     const [state, setState] = useState({
         currentQuery: "",
         currentAssumption: "",
@@ -120,13 +122,16 @@ export default function KnowledgeDashBoard() {
 
     /**
      *
-     * @method onDragStart
      * @param e
      */
     function onDragStart(e) {
         setState({...state, buttonPosition: {x: e.screenX, y: e.screenY}});
     }
 
+    /**
+     *
+     * @param e
+     */
     function onDragStop(e) {
         const dragX = Math.abs(e.screenX - state.buttonPosition.x);
         const dragY = Math.abs(e.screenY - state.buttonPosition.y);

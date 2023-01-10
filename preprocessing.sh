@@ -10,6 +10,8 @@ cssFile=${cssFile#build/}
 manifest=$( echo "$manifest" | jq --arg cssFile "$cssFile" '.content_scripts[0].css += [$cssFile]' )
 done
 echo "$manifest" > build/manifest.json
+# copy icons dir to build dir
+cp -r src/icons build/
 
 
 

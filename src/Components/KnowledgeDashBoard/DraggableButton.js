@@ -6,9 +6,11 @@ import ReactTooltip from 'react-tooltip'
 import {ThemeProvider} from '@jetbrains/ring-ui/dist/global/theme'
 import Theme from "@jetbrains/ring-ui/dist/global/theme";
 import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
-
+import {ReactComponent as WisdoomIcon} from '../../icons/wisdoomIcon.svg';
 /**
- * DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
+ * @desc DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
+ * @module
+ * @component
  * @param props
  * @returns {JSX.Element}
  */
@@ -33,7 +35,7 @@ export default function DraggableButton(props) {
                         position: "fixed",
                         display: props.state.dashBoardHidden ? "block" : "none"
                     }}
-                    icon={experimentIcon}
+                    icon={WisdoomIcon}
                     iconSize={Icon.Size.Size64}
                 >
                     <LoaderInline
