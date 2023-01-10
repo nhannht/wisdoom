@@ -7,6 +7,11 @@ import {ThemeProvider} from '@jetbrains/ring-ui/dist/global/theme'
 import Theme from "@jetbrains/ring-ui/dist/global/theme";
 import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
 
+/**
+ * DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
+ * @param props
+ * @returns {JSX.Element}
+ */
 export default function DraggableButton(props) {
     return (
         <Draggable
@@ -23,6 +28,7 @@ export default function DraggableButton(props) {
 
 
                     data-tip={"Knowledge DashBoard"}
+                    data-for={"KnowledgeDashBoard-tooltip"}
                     style={{
                         position: "fixed",
                         display: props.state.dashBoardHidden ? "block" : "none"
@@ -40,7 +46,8 @@ export default function DraggableButton(props) {
                         margin={2}/>
                 </Button>
                 </ThemeProvider>
-                <ReactTooltip place={"top"} effect={"solid"}/>
+                <ReactTooltip id={"KnowledgeDashBoard-tooltip"} type={"dark"}
+                    place={"top"} effect={"solid"}/>
                 </div>
 
         </Draggable>)

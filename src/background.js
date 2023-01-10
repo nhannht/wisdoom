@@ -14,11 +14,19 @@
 // }
 // apiSetup();
 // For development only
+/**
+ * Global api
+ * @type {number}
+ */
+
 let api = 0
 // chrome.storage.sync.get("apiKey", (result) => {
 //     console.log("current apiKey in the storage is " + result.apiKey)
 // })
-function addWolframKayChangeListener () {
+/**
+ *  Add a listener on key change
+ */
+function addWolframKeyChangeListener () {
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
         console.log(changes)
@@ -30,7 +38,7 @@ function addWolframKayChangeListener () {
     console.log("We just add listener for storage change")
     // setTimeout(()=> console.log("wait 5s"),5000);
 }
-addWolframKayChangeListener()
+addWolframKeyChangeListener()
 
 function setDefaultWolframKey () {
     chrome.storage.sync.set({apiKey: 'K8AKR2-62T7EH48V5'}, () => {
@@ -59,7 +67,14 @@ function saveApiListener() {
 }
 
 // saveApiListener();
-
+/**
+ * Qeury full result from wolfram alpha
+ * @param query
+ * @param assumption
+ * @param reinterpret
+ * @param podstate
+ * @returns {Promise<Response>}
+ */
 const getWolframFullResult = async (query,
                                     assumption ,
                                     reinterpret="true",

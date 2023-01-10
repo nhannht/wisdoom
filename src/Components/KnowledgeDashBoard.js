@@ -45,8 +45,15 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 //         buttonPosition: PropTypes.shape({x: PropTypes.number, y: PropTypes.number})
 //     })
 // };
+/**
+ * @desc This is Knowledge Dashboard
+ * @module KnowledgeDashBoard
+ * @returns {JSX.Element}
+ * @constructor
+ * @export module:KnowledgeDashBoard
+ * @todo How to design a program
+ */
 export default function KnowledgeDashBoard() {
-
 // BOOKMARK state of this file
     const [state, setState] = useState({
         currentQuery: "",
@@ -62,6 +69,11 @@ export default function KnowledgeDashBoard() {
 
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
 
+    /**
+     * @module KnowledgeDashBoard
+     * @function toggleSideBar
+     * Toggle sidebar
+     */
     function toggleSideBar() {
         if (collapsed) {
             toggleSidebar(true);
@@ -75,6 +87,14 @@ export default function KnowledgeDashBoard() {
     }
 
 
+    /**
+     * @module Components/KnowledgeDashBoard
+     * @function sendQueryToBackGround
+     * @param query
+     * @param assumption
+     * @param reinterpret
+     * @param podstate
+     */
     function sendQueryToBackGround(query,
                                    assumption ,
                                    reinterpret ,
@@ -98,6 +118,11 @@ export default function KnowledgeDashBoard() {
         });
     }
 
+    /**
+     *
+     * @method onDragStart
+     * @param e
+     */
     function onDragStart(e) {
         setState({...state, buttonPosition: {x: e.screenX, y: e.screenY}});
     }
@@ -114,15 +139,16 @@ export default function KnowledgeDashBoard() {
 
     }
 
+    /**
+     * Set wolfram key
+     * @param key
+     */
     function setWolframKey(key) {
         chrome.storage.sync.set({apiKey: key}, function () {
             // console.log('Wolfram is set to ' + key);
         })
         alertService.successMessage('Wolfram is set to ' + key);
     }
-
-
-
 
     // DONE render podstate
     function renderPods() {

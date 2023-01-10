@@ -1,6 +1,8 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Wisdoom",
+  "name": "Wisdoom",
+  "description": "Inject knowledge everywhere",
+  "author": "nhannht",
   "manifest_version": 3,
   "version": "0.1.0",
   "content_scripts": [

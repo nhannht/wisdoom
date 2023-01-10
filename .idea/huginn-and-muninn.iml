@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/out" />
     </content>
     <content url="file://$MODULE_DIR$/node_modules/@jetbrains/ring-ui/dist" />
     <orderEntry type="inheritedJdk" />
