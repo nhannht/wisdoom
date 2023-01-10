@@ -19,12 +19,17 @@
  * @type {number}
  */
 
+/**
+ *
+ * @type {number}
+ */
 let api = 0
 // chrome.storage.sync.get("apiKey", (result) => {
 //     console.log("current apiKey in the storage is " + result.apiKey)
 // })
+
 /**
- *  Add a listener on key change
+ *
  */
 function addWolframKeyChangeListener () {
 
@@ -40,6 +45,7 @@ function addWolframKeyChangeListener () {
 }
 addWolframKeyChangeListener()
 
+
 /**
  *
  */
@@ -52,6 +58,7 @@ function setDefaultWolframKey () {
     })
 }
 setDefaultWolframKey()
+
 
 /**
  *
@@ -73,14 +80,6 @@ function saveApiListener() {
 }
 
 // saveApiListener();
-/**
- * Qeury full result from wolfram alpha
- * @param query
- * @param assumption
- * @param reinterpret
- * @param podstate
- * @returns {Promise<Response>}
- */
 /**
  *
  * @param query
@@ -135,7 +134,12 @@ function createContextMenu() {
 }
 
 createContextMenu();
+/**
+ *
+ * @type {string}
+ */
 let oldFreeStyleQuery = ''
+
 
 /**
  *
@@ -169,6 +173,7 @@ function downloadUrl() {
     })
 }
 downloadUrl()
+
 
 /**
  *
@@ -229,7 +234,12 @@ function getResultListener() {
 
 // getResultListener();
 //
+/**
+ *
+ * @type {string}
+ */
 let oldSearch = ""
+
 
 /**
  *

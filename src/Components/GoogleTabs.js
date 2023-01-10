@@ -15,12 +15,11 @@ import ImageActions from "./ImageActions";
 
 /**
  * @module
- * @component
+ * @category Google
  * @param props
  * @returns {JSX.Element}
- * @constructor
  */
-export function GoogleTabs(props) {
+export default  function GoogleTabs(props) {
     const json = props.data;
 
     const listPods = json.queryresult.pods.map((pod) => {

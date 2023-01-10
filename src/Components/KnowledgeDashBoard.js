@@ -48,7 +48,7 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 /**
  * @desc This is Knowledge Dashboard
  * @module
- * @component
+ * @category KnowledgeDashboard
  * @returns {JSX.Element}
  * @todo How to design a program
  */
@@ -70,14 +70,14 @@ export default function KnowledgeDashBoard() {
     });
 
     /**
-     * @desc
+     * @desc state of React-Pro-Sidebar
      */
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
 
     /**
      * @module KnowledgeDashBoard
      * @function toggleSideBar
-     * Toggle sidebar
+     * @desc Toggle sidebar
      */
     function toggleSideBar() {
         if (collapsed) {

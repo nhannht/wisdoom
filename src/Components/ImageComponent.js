@@ -2,10 +2,9 @@ import useImage from 'react-image';
 
 /**
  * @module
- * @component
+ * @category KnowledgeDashboard
  * @param imageUrl
  * @returns {JSX.Element}
- * @constructor
  */
 export default  function ImageComponent({imageUrl}) {
     const {src} = useImage({

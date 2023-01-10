@@ -8,10 +8,9 @@ import ReactTooltip from 'react-tooltip';
 // DONE change drop down to button group in image action
 /**
  * @module
- * @component
+ * @category KnowledgeDashboard
  * @param subpod
  * @returns {JSX.Element}
- * @constructor
  */
 export default  function ImageActions({subpod}){
     const subpodId = "subpod-" + subpod.img.src + "-image-actions"

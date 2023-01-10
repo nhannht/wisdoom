@@ -9,7 +9,7 @@ import {ReactComponent as WisdoomIcon} from '../../icons/wisdoomIcon.svg';
 /**
  * @desc DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
  * @module
- * @component
+ * @category KnowledgeDashBoard
  * @param props
  * @returns {JSX.Element}
  */
