@@ -36,6 +36,7 @@ jobs:
           sudo npm install -g yarn
           yarn install
           echo "Run yarn build"
+          unset CI
           yarn build
           echo "Run preprocessing.sh"
           yarn preprocessing
