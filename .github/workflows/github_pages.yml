@@ -18,7 +18,7 @@ jobs:
           sudo npm install -g yarn
       - name: Install dependencies
         run: |
-          yarn add --dev jsdoc@3.6.11 better-docs parcel
+          yarn add --dev jsdoc@3.6.11 tui-jsdoc-template
       - name: Build doc
         run: |
           yarn docs

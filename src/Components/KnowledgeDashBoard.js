@@ -47,8 +47,7 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 // };
 /**
  * @desc This is Knowledge Dashboard
- * @module
- * @category KnowledgeDashboard
+ * @class KnowledgeDashBoard
  * @returns {JSX.Element}
  * @todo How to design a program
  */
@@ -75,8 +74,7 @@ export default function KnowledgeDashBoard() {
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
 
     /**
-     * @module KnowledgeDashBoard
-     * @function toggleSideBar
+     * @function
      * @desc Toggle sidebar
      */
     function toggleSideBar() {
@@ -93,8 +91,7 @@ export default function KnowledgeDashBoard() {
 
 
     /**
-     * @module Components/KnowledgeDashBoard
-     * @function sendQueryToBackGround
+     * @function
      * @param query
      * @param assumption
      * @param reinterpret
@@ -124,7 +121,7 @@ export default function KnowledgeDashBoard() {
     }
 
     /**
-     *
+     * @function
      * @param e
      */
     function onDragStart(e) {
@@ -132,7 +129,7 @@ export default function KnowledgeDashBoard() {
     }
 
     /**
-     *
+     * @function
      * @param e
      */
     function onDragStop(e) {
@@ -149,6 +146,7 @@ export default function KnowledgeDashBoard() {
 
     /**
      * Set wolfram key
+     * @function
      * @param key
      */
     function setWolframKey(key) {
@@ -160,7 +158,7 @@ export default function KnowledgeDashBoard() {
 
     // DONE render podstate
     /**
-     *
+     * @function
      * @returns {*}
      */
     function renderPods() {
@@ -201,6 +199,9 @@ export default function KnowledgeDashBoard() {
                     )
                 })
             }
+            /**
+             * @function
+             */
             const subpodRender = pod.subpods.map((subpod, index) => {
                 const subpodTitle = subpod.title;
                 const subpodImage = subpod.img.src;
@@ -281,6 +282,9 @@ export default function KnowledgeDashBoard() {
 
     /*
 
+     */
+    /**
+     * @function
      */
     function renderAssumptions() {
         const queryResult = state.queryResult;

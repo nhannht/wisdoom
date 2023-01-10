@@ -14,14 +14,20 @@ import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
 import ImageActions from "./ImageActions";
 
 /**
- * @module
- * @category Google
+ * @class GoogleTabs
  * @param props
  * @returns {JSX.Element}
  */
 export default  function GoogleTabs(props) {
+    /**
+     * @type {string[]}
+     */
     const json = props.data;
 
+    /**
+     *
+     * @type {string[]}
+     */
     const listPods = json.queryresult.pods.map((pod) => {
         const title = pod.title;
         const id = pod.id.replace(/:/g, '_');
@@ -40,10 +46,21 @@ export default  function GoogleTabs(props) {
 
     const [selected, setSelected] = useState(listPods[0]);
 
+    /**
+     * @function
+     * @param title
+     * @returns {string}
+     */
     function findPodWithTitle(title) {
         return listPods.find(pod => pod.title === title);
     }
 
+    /**
+     * @function
+     * @param str
+     * @param n
+     * @returns {string|*}
+     */
     function truncate(str, n) {
         return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
     }

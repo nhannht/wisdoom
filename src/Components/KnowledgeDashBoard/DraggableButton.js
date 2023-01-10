@@ -8,8 +8,7 @@ import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
 import {ReactComponent as WisdoomIcon} from '../../icons/wisdoomIcon.svg';
 /**
  * @desc DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
- * @module
- * @category KnowledgeDashBoard
+ * @class DraggableButton
  * @param props
  * @returns {JSX.Element}
  */

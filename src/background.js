@@ -161,7 +161,7 @@ function freeInputListener() {
 freeInputListener();
 
 /**
- *
+ * @function
  */
 function downloadUrl() {
     chrome.runtime.onMessage.addListener((msg) => {
@@ -242,7 +242,7 @@ let oldSearch = ""
 
 
 /**
- *
+ * @function
  */
 function googleResultListener() {
     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {

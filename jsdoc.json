@@ -8,28 +8,25 @@
     ]
   },
   "plugins": [
-    "plugins/markdown",
-    "better-docs/component",
-    "better-docs/category"
+    "plugins/markdown"
   ],
   "opts": {
     "encoding": "utf8",
     "destination": "docs/",
     "recurse": true,
-    "template": "./node_modules/better-docs",
+    "template": "./node_modules/tui-jsdoc-template",
     "readme": "./README.md"
   },
   "templates": {
     "search": true,
     "cleverLinks": true,
-    "better-docs": {
-      "navLinks": [
-        {
-          "label": "Github",
-          "href": "https://github.com/nhannht/wisdoom"
-        }
-      ]
-
-    }
+    "logo": {
+      "url":"https://raw.githubusercontent.com/nhannht/wisdoom/master/src/icons/wisdoomIcon.svg",
+      "width": "30px",
+      "height": "30px",
+      "link": "https://nhannht.github.io/wisdoom/"
+    },
+    "name": "Wisdoom",
+    "footerText": "Let the wisdom of the crowd guide you"
   }
 }

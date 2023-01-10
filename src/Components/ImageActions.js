@@ -7,13 +7,20 @@ import IssueIcon from '@jetbrains/icons/issue';
 import ReactTooltip from 'react-tooltip';
 // DONE change drop down to button group in image action
 /**
- * @module
- * @category KnowledgeDashboard
+ * @class ImageActions
  * @param subpod
  * @returns {JSX.Element}
  */
 export default  function ImageActions({subpod}){
+    /**
+     *
+     * @type {string}
+     */
     const subpodId = "subpod-" + subpod.img.src + "-image-actions"
+    /**
+     *
+     * @type {string}
+     */
     const subpodTooltipId = "subpod-" + subpod.img.src + "-image-actions"+"-tooltip"
     return (
         <p><ButtonGroup id={subpodId}
