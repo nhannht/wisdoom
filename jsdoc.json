@@ -13,6 +13,6 @@
       "encoding": "utf8",
       "destination": "docs/",
       "recurse": true,
-    "template": "./node_modules/better-docs"
+      "template": "./node_modules/better-docs"
   }
 }
