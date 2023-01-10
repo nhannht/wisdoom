@@ -35,7 +35,10 @@ jobs:
           sudo apt install npm
           sudo npm install -g yarn
           yarn install
+          echo "Run yarn build"
           yarn build
+          echo "Run preprocessing.sh"
+          yarn preprocessing
           zip -r release.zip build
           echo "::set-output name=release_zip::release.zip"
       - name: Upload Release Asset
