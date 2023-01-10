@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> Components/ImageActions.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -86,39 +88,65 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>Components/ImageActions.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p>Descendant of Wolfram Panda</p>
-<p><video src="https://user-images.githubusercontent.com/69144096/211085462-81b60003-da61-4f71-a1d4-821f93afb858.mp4"></video></p>
-<p>Rewrite Wolfram Pandas using React <a href="https://github.com/nhannht/wolfram-panda">Wolfram Pandas</a>, this is just a piece of bigger system.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* global chrome */
+import copyIcon from '@jetbrains/icons/copy'
+import Button from '@jetbrains/ring-ui/dist/button/button';
+import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
+import DownloadIcon from '@jetbrains/icons/download';
+import IssueIcon from '@jetbrains/icons/issue';
+import ReactTooltip from 'react-tooltip';
+// DONE change drop down to button group in image action
+/**
+ * @module
+ * @category KnowledgeDashboard
+ * @param subpod
+ * @returns {JSX.Element}
+ */
+export default  function ImageActions({subpod}){
+    const subpodId = "subpod-" + subpod.img.src + "-image-actions"
+    const subpodTooltipId = "subpod-" + subpod.img.src + "-image-actions"+"-tooltip"
+    return (
+        &lt;p>&lt;ButtonGroup id={subpodId}
+            split={true}
+        >
+            &lt;Button data-tip={"Download image"} data-for={subpodTooltipId}
+                    icon={DownloadIcon} onClick={async () => {
+                await chrome.runtime.sendMessage({urlDownload: subpod.img.src})
+            }}>&lt;/Button>
+            &lt;Button data-tip={"Copy image link"} data-for={subpodTooltipId}
+                    icon={copyIcon} onClick={async () => {
+                await navigator.clipboard.writeText(subpod.img.src)
+            }}>&lt;/Button>
+            &lt;Button data-tip={"Copy image plain text"} data-for={subpodTooltipId}
+                    icon={IssueIcon} onClick={async () => {
+                await navigator.clipboard.writeText(subpod.plaintext)
+            }}> &lt;/Button>
+        &lt;/ButtonGroup>
+        &lt;ReactTooltip
+            id={subpodTooltipId}
+            type={"dark"}
+            place={"right"}
+            effect={"solid"}
+        />
+        &lt;/p>
+
+
+    )
+
+
+}</code></pre>
+        </article>
     </section>
-
-
 
 
 

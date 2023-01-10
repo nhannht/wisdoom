@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> Components/KnowledgeDashBoard/DraggableButton.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -86,39 +88,75 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>Components/KnowledgeDashBoard/DraggableButton.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p>Descendant of Wolfram Panda</p>
-<p><video src="https://user-images.githubusercontent.com/69144096/211085462-81b60003-da61-4f71-a1d4-821f93afb858.mp4"></video></p>
-<p>Rewrite Wolfram Pandas using React <a href="https://github.com/nhannht/wolfram-panda">Wolfram Pandas</a>, this is just a piece of bigger system.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Draggable from "react-draggable";
+import Button from "@jetbrains/ring-ui/dist/button/button";
+import Icon from "@jetbrains/ring-ui/dist/icon/icon";
+import ReactTooltip from 'react-tooltip'
+import {ThemeProvider} from '@jetbrains/ring-ui/dist/global/theme'
+import Theme from "@jetbrains/ring-ui/dist/global/theme";
+import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
+import {ReactComponent as WisdoomIcon} from '../../icons/wisdoomIcon.svg';
+/**
+ * @desc DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
+ * @module
+ * @category KnowledgeDashBoard
+ * @param props
+ * @returns {JSX.Element}
+ */
+export default function DraggableButton(props) {
+    return (
+        &lt;Draggable
+
+            onStart={props.onStart} onStop={props.onStop}>
+            &lt;div
+                style={{
+                    position: 'fixed',
+                     bottom: "20%", right: "20%"
+                }}
+            >
+                &lt;ThemeProvider theme={Theme.DARK}>
+                    &lt;Button
+
+
+                    data-tip={"Knowledge DashBoard"}
+                    data-for={"KnowledgeDashBoard-tooltip"}
+                    style={{
+                        position: "fixed",
+                        display: props.state.dashBoardHidden ? "block" : "none"
+                    }}
+                    icon={WisdoomIcon}
+                    iconSize={Icon.Size.Size64}
+                >
+                    &lt;LoaderInline
+                        style={{
+                            display: props.state.loading ? "block" : "none",
+                            position: "absolute",
+                            right: 0,
+                        }}
+
+                        margin={2}/>
+                &lt;/Button>
+                &lt;/ThemeProvider>
+                &lt;ReactTooltip id={"KnowledgeDashBoard-tooltip"} type={"dark"}
+                    place={"top"} effect={"solid"}/>
+                &lt;/div>
+
+        &lt;/Draggable>)
+        ;
+}
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

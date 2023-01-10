@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> Components/ImageComponent.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -86,39 +88,32 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>Components/ImageComponent.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p>Descendant of Wolfram Panda</p>
-<p><video src="https://user-images.githubusercontent.com/69144096/211085462-81b60003-da61-4f71-a1d4-821f93afb858.mp4"></video></p>
-<p>Rewrite Wolfram Pandas using React <a href="https://github.com/nhannht/wolfram-panda">Wolfram Pandas</a>, this is just a piece of bigger system.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>import useImage from 'react-image';
+
+/**
+ * @module
+ * @category KnowledgeDashboard
+ * @param imageUrl
+ * @returns {JSX.Element}
+ */
+export default  function ImageComponent({imageUrl}) {
+    const {src} = useImage({
+        srcList: imageUrl,
+    });
+    return &lt;img src={src} />;
+}</code></pre>
+        </article>
     </section>
-
-
 
 
 

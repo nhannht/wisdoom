@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> Components/GoogleTabs.js</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -86,39 +88,121 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>Components/GoogleTabs.js</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p>Descendant of Wolfram Panda</p>
-<p><video src="https://user-images.githubusercontent.com/69144096/211085462-81b60003-da61-4f71-a1d4-821f93afb858.mp4"></video></p>
-<p>Rewrite Wolfram Pandas using React <a href="https://github.com/nhannht/wolfram-panda">Wolfram Pandas</a>, this is just a piece of bigger system.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* global chrome */
+import Dropdown from '@jetbrains/ring-ui/dist/dropdown/dropdown';
+import PopupMenu from '@jetbrains/ring-ui/dist/popup-menu/popup-menu';
+import Header from '@jetbrains/ring-ui/dist/header/header';
+import Text from '@jetbrains/ring-ui/dist/text/text';
+import Button from '@jetbrains/ring-ui/dist/button/button';
+import {useState} from "react";
+import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
+import Img from 'react-image';
+import AdaptiveIsland from "@jetbrains/ring-ui/dist/island/island";
+import Content from "@jetbrains/ring-ui/dist/island/content";
+import Loader from '@jetbrains/ring-ui/dist/loader/loader';
+import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
+import ImageActions from "./ImageActions";
+
+/**
+ * @module
+ * @category Google
+ * @param props
+ * @returns {JSX.Element}
+ */
+export default  function GoogleTabs(props) {
+    const json = props.data;
+
+    const listPods = json.queryresult.pods.map((pod) => {
+        const title = pod.title;
+        const id = pod.id.replace(/:/g, '_');
+        const subpodContent = pod.subpods.map(subpod => {
+                const url = subpod.img.src;
+                const text = subpod.plaintext;
+                return {subpodUrl: url, subpodText: text};
+            }
+        )
+        return {
+            title: title,
+            id: id,
+            content: subpodContent
+        }
+    });
+
+    const [selected, setSelected] = useState(listPods[0]);
+
+    function findPodWithTitle(title) {
+        return listPods.find(pod => pod.title === title);
+    }
+
+    function truncate(str, n) {
+        return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
+    }
+
+    const podsTitle = listPods.map(pod => pod.title);
+    // Render result from generateTabs
+    return (
+        &lt;Grid data-test="alignment">
+            &lt;Row start="xs">
+                &lt;Col xs={2}>
+                    &lt;Dropdown anchor={
+                        &lt;Tooltip title={selected.title}>
+                            &lt;Button key='dropdown' data-test='button-dropdown' {...{['dropdown']: true}} >
+                                {truncate(selected.title, 15)}
+                            &lt;/Button>
+                        &lt;/Tooltip>
+                    }>
+                        &lt;PopupMenu closeOnSelect
+                                   data={podsTitle.map(label => ({label}))}
+                                   onSelect={event => {
+                                       // console.log(event)
+                                       const pod = findPodWithTitle(event.label);
+                                       // console.log(pod)
+                                       setSelected(pod);
+                                       console.log(selected)
+                                   }}
+                        />
+                    &lt;/Dropdown>
+                &lt;/Col>
+                &lt;Col xs={6}>
+                    &lt;AdaptiveIsland>
+                        &lt;Header>
+                            &lt;Text>{selected.title}&lt;/Text>
+                        &lt;/Header>
+                        &lt;Content>{selected.content.map((subpod, index) => {
+                            return (
+
+                                &lt;div key={index} >
+                                    &lt;Img src={subpod.subpodUrl}
+                                         loader={&lt;Loader/>}
+                                         key={subpod.subpodUrl}
+                                    />
+                                    &lt;br>&lt;/br>
+                                    &lt;ImageActions subpod={subpod}/>
+
+                                &lt;/div>
+                            )
+                        })}&lt;/Content>
+                    &lt;/AdaptiveIsland>
+
+                &lt;/Col>
+            &lt;/Row>
+        &lt;/Grid>
+    )
+        ;
+
+}</code></pre>
+        </article>
     </section>
-
-
 
 
 

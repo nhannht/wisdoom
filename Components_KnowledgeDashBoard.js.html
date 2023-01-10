@@ -1,0 +1,719 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Components/KnowledgeDashBoard.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/nhannht/wisdoom"
+                        >
+                            Github
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#addWolframKeyChangeListener">addWolframKeyChangeListener</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#createContextMenu">createContextMenu</a></li><li><a href="global.html#downloadUrl">downloadUrl</a></li><li><a href="global.html#freeInputListener">freeInputListener</a></li><li><a href="global.html#getResultListener">getResultListener</a></li><li><a href="global.html#getWolframFullResult">getWolframFullResult</a></li><li><a href="global.html#googleResultListener">googleResultListener</a></li><li><a href="global.html#KnowledgeDashBoardPlaceHolder">KnowledgeDashBoardPlaceHolder</a></li><li><a href="global.html#oldFreeStyleQuery">oldFreeStyleQuery</a></li><li><a href="global.html#oldSearch">oldSearch</a></li><li><a href="global.html#saveApiListener">saveApiListener</a></li><li><a href="global.html#setDefaultWolframKey">setDefaultWolframKey</a></li></ul></div><div class="category"><h2>Google</h2><h3>Modules</h3><ul><li><a href="module-Components_GoogleTabs.html">Components/GoogleTabs</a></li></ul></div><div class="category"><h2>KnowledgeDashBoard</h2><h3>Modules</h3><ul><li><a href="module-Components_KnowledgeDashBoard_DraggableButton.html">Components/KnowledgeDashBoard/DraggableButton</a></li></ul></div><div class="category"><h2>KnowledgeDashboard</h2><h3>Modules</h3><ul><li><a href="module-Components_ImageActions.html">Components/ImageActions</a></li><li><a href="module-Components_ImageComponent.html">Components/ImageComponent</a></li><li><a href="module-Components_KnowledgeDashBoard.html">Components/KnowledgeDashBoard</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>Components/KnowledgeDashBoard.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* global chrome */
+// BOOKMARK import here
+import Button from '@jetbrains/ring-ui/dist/button/button';
+import {Sidebar, useProSidebar} from "react-pro-sidebar";
+import Island from "@jetbrains/ring-ui/dist/island/island";
+import Header from "@jetbrains/ring-ui/dist/header/header";
+import Content from "@jetbrains/ring-ui/dist/island/content";
+import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
+import {Input, Size} from "@jetbrains/ring-ui/dist/input/input";
+import {useState} from "react";
+import Img from 'react-image';
+import Loader from '@jetbrains/ring-ui/dist/loader/loader';
+import Tray from "@jetbrains/ring-ui/dist/header/tray";
+import TrayIcon from '@jetbrains/ring-ui/dist/header/tray-icon';
+import settingIcon from '@jetbrains/icons/settings';
+import collapseIcon from '@jetbrains/icons/collapse';
+import starIcon from '@jetbrains/icons/star-empty';
+import likeIcon from '@jetbrains/icons/vote-empty';
+import Text from '@jetbrains/ring-ui/dist/text/text';
+import '@jetbrains/icons/file-js'
+import alertService from '@jetbrains/ring-ui/dist/alert-service/alert-service';
+import checkmarkIcon from '@jetbrains/icons/checkmark';
+import Panel from "@jetbrains/ring-ui/dist/panel/panel";
+import ImageActions from "./ImageActions";
+import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
+import 'rc-dropdown/assets/index.css';
+import {Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
+import Link from "@jetbrains/ring-ui/dist/link/link";
+import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
+import SearchIcon from '@jetbrains/icons/search';
+import WolframIcon from '@jetbrains/icons/asterisk';
+import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
+import ReactTooltip from "react-tooltip";
+import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
+// BOOKMARK end of imports
+// DraggableButton.propTypes = {
+//     onStart: PropTypes.func,
+//     onStop: PropTypes.func,
+//     state: PropTypes.shape({
+//         dashBoardHidden: PropTypes.bool,
+//         loadingResult: PropTypes.bool,
+//         settingHidden: PropTypes.bool,
+//         currentView: PropTypes.string,
+//         queryResult: PropTypes.arrayOf(PropTypes.any),
+//         buttonPosition: PropTypes.shape({x: PropTypes.number, y: PropTypes.number})
+//     })
+// };
+/**
+ * @desc This is Knowledge Dashboard
+ * @module
+ * @category KnowledgeDashboard
+ * @returns {JSX.Element}
+ * @todo How to design a program
+ */
+export default function KnowledgeDashBoard() {
+// BOOKMARK state of this file
+    /**
+     * @desc state of this file
+     */
+    const [state, setState] = useState({
+        currentQuery: "",
+        currentAssumption: "",
+        queryResult: [],
+        dashBoardHidden: true,
+        buttonPosition: {x: 0, y: 0},
+        settingHidden: true,
+        currentView: 'WolframAlpha',
+        loadingDraggableButton: false,
+        loadingResult: false,
+    });
+
+    /**
+     * @desc state of React-Pro-Sidebar
+     */
+    const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
+
+    /**
+     * @module KnowledgeDashBoard
+     * @function toggleSideBar
+     * @desc Toggle sidebar
+     */
+    function toggleSideBar() {
+        if (collapsed) {
+            toggleSidebar(true);
+            collapseSidebar(false);
+            setState({...state, dashBoardHidden: false});
+        } else {
+            collapseSidebar(true);
+            toggleSidebar(false);
+            setState({...state, dashBoardHidden: true});
+        }
+    }
+
+
+    /**
+     * @module Components/KnowledgeDashBoard
+     * @function sendQueryToBackGround
+     * @param query
+     * @param assumption
+     * @param reinterpret
+     * @param podstate
+     */
+    function sendQueryToBackGround(query,
+                                   assumption ,
+                                   reinterpret ,
+                                   podstate = ""
+    ) {
+        // console.log("currentAssumption is",state.currentAssumption)
+        setState(prevState => ({...prevState, currentQuery: query}));
+        setState(prevState => ({...prevState, loadingResult: true}));
+        if (assumption !== undefined) {
+            setState(prevState => ({...prevState, currentAssumption: assumption}));
+        }
+        // If query is change, assumption simply get reset, at least in our case
+        chrome.runtime.sendMessage({
+            freeStyleQuery: query,
+            assumption: assumption,
+            reinterpret: reinterpret,
+            podstate: podstate
+        }, (response) => {
+            setState(prevState => ({...prevState, queryResult: response.queryresult}));
+            setState(prevState => ({...prevState, loadingResult: false}));
+        });
+    }
+
+    /**
+     *
+     * @param e
+     */
+    function onDragStart(e) {
+        setState({...state, buttonPosition: {x: e.screenX, y: e.screenY}});
+    }
+
+    /**
+     *
+     * @param e
+     */
+    function onDragStop(e) {
+        const dragX = Math.abs(e.screenX - state.buttonPosition.x);
+        const dragY = Math.abs(e.screenY - state.buttonPosition.y);
+        // console.log(dragX,dragY)
+        if (dragX > 5 || dragY > 5) {
+            e.stopPropagation();
+        } else {
+            toggleSideBar();
+        }
+
+    }
+
+    /**
+     * Set wolfram key
+     * @param key
+     */
+    function setWolframKey(key) {
+        chrome.storage.sync.set({apiKey: key}, function () {
+            // console.log('Wolfram is set to ' + key);
+        })
+        alertService.successMessage('Wolfram is set to ' + key);
+    }
+
+    // DONE render podstate
+    /**
+     *
+     * @returns {*}
+     */
+    function renderPods() {
+        const queryResult = state.queryResult;
+        if (queryResult.success === false) return;
+        const query = queryResult.inputstring;
+        const pods = queryResult.pods;
+        let renderPods = null;
+        if (queryResult.pods === undefined) return;
+        renderPods = pods.map((pod, index) => {
+            let renderStates;
+            // DONE render states
+            if (pod.states) {
+                const statesArray = [];
+                for (let i = 0; i &lt; pod.states.length; i++) {
+                    if (pod.states[i].states) {
+                        for (let j = 0; j &lt; pod.states[i].states.length; j++) {
+                            statesArray.push(pod.states[i].states[j]);
+                        }
+                    } else {
+                        statesArray.push(pod.states[i]);
+                    }
+                }
+                renderStates = statesArray.map((state_, index) => {
+                    const podStateInput = state_.input;
+                    const podStateName = state_.name;
+                    return (
+                        &lt;span>
+                            {index > 0 &amp;&amp; ", "}
+                            &lt;Link
+                                onClick={() => {
+                                    sendQueryToBackGround(query,
+                                        state.currentAssumption,
+                                        true, podStateInput)
+                                }
+                                }
+                            >{podStateName}&lt;/Link>&lt;/span>
+                    )
+                })
+            }
+            const subpodRender = pod.subpods.map((subpod, index) => {
+                const subpodTitle = subpod.title;
+                const subpodImage = subpod.img.src;
+                const height = subpod.img.height;
+                const width = subpod.img.width;
+                let renderSubpodStates;
+
+                if (subpod.states) {
+                    const subpodStatesArray = [];
+                    for (let i = 0; i &lt; subpod.states.length; i++) {
+                        if (subpod.states[i].states) {
+                            for (let j = 0; j &lt; subpod.states[i].states.length; j++) {
+                                subpodStatesArray.push(subpod.states[i].states[j]);
+                            }
+                        } else {
+                            subpodStatesArray.push(subpod.states[i]);
+                        }
+                    }
+
+                    renderSubpodStates = subpodStatesArray.map((state_, index) => {
+                        const subpodStateInput = state_.input;
+                        const subpodStateName = state_.name;
+                        return (
+                            &lt;span>
+                                {index > 0 &amp;&amp; ", "}
+                                &lt;Link
+                                    onClick={() => {
+                                        sendQueryToBackGround(query,
+                                            state.currentAssumption,
+                                            true, subpodStateInput)
+                                    }
+                                    }
+                                >{subpodStateName}&lt;/Link>&lt;/span>
+                        )
+                    })
+                }
+                return (
+
+                    &lt;Grid>&lt;Row>
+                        &lt;Col>
+                            &lt;Row>&lt;H4 key={index}>
+                                {subpodTitle}
+                            &lt;/H4>&lt;/Row>
+                            {subpod.states &amp;&amp; &lt;Text>Other states: {renderSubpodStates}&lt;/Text>}
+                            {/*TODO make those image ease in out*/}
+                            &lt;Row>&lt;Img src={subpodImage}
+                                      height={height}
+                                      width={width}
+                                      key={subpodImage}
+                                      loader={&lt;Loader/>}
+                                      unloader={&lt;Text>Image not found&lt;/Text>}
+                                      style={{animation: "slideIn 1s forwards"}}
+                            />&lt;/Row>
+                        &lt;/Col>
+                        &lt;Col xs={12}>
+                            &lt;Row end={"xs"}>
+                                &lt;Col xs={6}>&lt;ImageActions subpod={subpod}/>&lt;/Col>
+                            &lt;/Row>
+                        &lt;/Col>
+                    &lt;/Row>&lt;/Grid>
+                )
+            })
+            return (
+                &lt;Panel
+                    key={index}>
+                    &lt;H3>
+                        &lt;Text>{pod.title}&lt;/Text>
+                    &lt;/H3>
+                    {pod.states &amp;&amp; &lt;Text>Other states: {renderStates}&lt;/Text>}
+                    {subpodRender}
+                &lt;/Panel>
+            )
+        })
+        return renderPods;
+
+
+    }
+
+    /*
+
+     */
+    function renderAssumptions() {
+        const queryResult = state.queryResult;
+        // console.log("query result", queryResult)
+        const query = queryResult.inputstring;
+        if (queryResult.success === false) return
+        let assumptionRender = null;
+
+
+        const simpleTypes = ["Clash", "MultiClash", "SubCategory", "SubCategory", "Attribute"
+            , "Unit", "AngleUnit", "Function", "TimeAMOrPM", "DateOrder",
+            "MortalityYearDOB", "ListOrTimes", "ListOrNumber", "CoordinateSystem",
+            "I", "NumberBase", "MixedFraction", "TideStation"]
+        if (queryResult.assumptions) {
+            if (Array.isArray(queryResult.assumptions)) {
+                const assumptionArray = queryResult.assumptions;
+                assumptionRender = assumptionArray.map((assumptions, index) => {
+                    const type = assumptions.type;
+                    // console.log(assumptions)
+                    if (simpleTypes.includes(type)) {
+                        const descriptions = assumptions.values.map((assumption) => assumption.desc);
+                        const inputs = assumptions.values.map((assumption) => assumption.input);
+                        const selectedData = descriptions.map((description, index) => ({
+                                label: description,
+                                input: inputs[index],
+                                key: index,
+                            })
+                        )
+                        const menuItemRender = selectedData.splice(1).map((data) => {
+                            return (
+                                &lt;MenuItem key={data.key}
+                                          onClick={() => {
+                                              sendQueryToBackGround(query, data.input)
+                                          }}>
+                                    {data.label}
+                                &lt;/MenuItem>
+                            )
+                        })
+                        return (
+                            &lt;p>
+                                Assuming &lt;Link>{selectedData[0].label}&lt;/Link>, other assumptions
+                                &lt;Menu
+                                    closeOnClick={true}
+                                >
+                                    &lt;SubMenu label={type}>
+                                        {menuItemRender}
+                                    &lt;/SubMenu>
+
+                                &lt;/Menu>
+                            &lt;/p>
+                        )
+
+
+                    }
+                })
+            } else if (queryResult.assumptions.values !== undefined) {
+                const assumptions = queryResult.assumptions.values;
+                const assumptionsType = queryResult.assumptions.type;
+                const descriptions = assumptions.map((assumption) => assumption.desc);
+                const inputs = assumptions.map((assumption) => assumption.input);
+                const selectedData = descriptions.map((description, index) => ({
+                    label: description,
+                    input: inputs[index],
+                    key: index,
+                }))
+                const menuItemRender = selectedData.splice(1).map((data) => {
+                    return (
+                        &lt;MenuItem
+
+                            key={data.key}
+                            onClick={() => {
+                                sendQueryToBackGround(query, data.input)
+                            }}>
+                            {data.label}
+                        &lt;/MenuItem>
+                    )
+                })
+                assumptionRender = (
+                    &lt;p>
+                        Assuming &lt;Link>{selectedData[0].label}&lt;/Link>, other assumptions
+                        &lt;Menu
+                            closeOnClick={true}
+                        >
+
+                            {menuItemRender}
+
+                        &lt;/Menu>&lt;/p>)
+
+
+            }
+        }
+        return (
+            &lt;Panel>
+                {assumptionRender}
+            &lt;/Panel>
+        )
+
+
+    }
+
+
+    /**
+     *
+     * @type {number}
+     */
+    const windowHeight = window.innerHeight;
+    /**
+     *
+     * @type {number}
+     */
+    const sidebarHeightWithoutHeader = windowHeight - 64;
+
+    return (
+        &lt;div>
+            &lt;DraggableButton
+                title={"Wisdoom!!!!!"}
+                onStart={onDragStart} onStop={onDragStop} state={state}/>
+            {/*TODO make the header in sidebar sticky*/}
+            &lt;Sidebar
+                defaultCollapsed={true}
+                collapsedWidth={0}
+                width={"50%"}
+                // white
+                backgroundColor={"#ffffff"}
+                style={{
+                    position: "fixed",
+                    bottom: 0,
+                    right: 0,
+                    height: sidebarHeightWithoutHeader,
+                    // set right border visible
+                    border: "1px solid #e0e0e0",
+                }}>
+                &lt;Island
+                    style={{
+                        position: "sticky",
+                        border: "none", boxShadow: "none",
+                    }}
+                >
+                    {/*How to make this header sticky*/}
+                    &lt;Header
+                        style={{
+                            position: "fixed", top: 0,
+                            width: "50%",
+                            display: "flex",
+                            zIndex: 1000000
+                        }}
+                    >
+                        &lt;ButtonGroup
+                            split={true}
+                        >
+                            &lt;Button
+                                id={"closeButton"}
+                                data-tip={"Collapse"}
+                                data-for={"collapse-tooltip"}
+                                style={{
+                                    paddingTop: "4px",
+                                    paddingLeft: "8px",
+                                    paddingRight: "8px",
+                                    height: "61px",
+                                }}
+                                icon={collapseIcon} onClick={() => {
+                                toggleSideBar()
+                            }}>&lt;/Button>
+                            &lt;ReactTooltip id={"collapse-tooltip"} place={"bottom"} effect={"solid"}>&lt;/ReactTooltip>
+                            {/*&lt;div style={{display: state.loadingResult ? "block" : "none",}}>*/}
+                            {/*    &lt;div className="ring-loader-inline"/>*/}
+                            {/*&lt;/div>*/}
+                        &lt;/ButtonGroup>
+                        &lt;Text>&lt;LoaderInline
+                            style={{
+                                display: state.loadingResult ? "inline-block" : "none",
+                                top: "4px"
+
+                            }}
+                        />&lt;/Text>
+                        &lt;Tray>
+
+
+                            &lt;TrayIcon
+                                icon={WolframIcon}
+                                data-tip={"Wolfram Alpha"}
+                                data-for={"wolfram-alpha-tooltip"}
+                                onClick={() => {
+                                    setState({...state, currentView: "WolframAlpha"})
+                                }
+                                }/>
+                            &lt;ReactTooltip id={"wolfram-alpha-tooltip"} place={"bottom"} effect={"solid"}>&lt;/ReactTooltip>
+
+                            &lt;TrayIcon
+                                icon={settingIcon}
+                                data-tip={"Settings"}
+                                data-for={"settings-tooltip"}
+                                onClick={(e) => {
+                                    setState({...state, currentView: "Settings"});
+                                }}
+                                id={"settingButton"}
+                            >
+                            &lt;/TrayIcon>
+                            &lt;ReactTooltip id={"settings-tooltip"} place={"bottom"} effect={"solid"}>&lt;/ReactTooltip>
+                            &lt;TrayIcon
+                                data-tip={"Source code"}
+                                data-for={"source-code-tooltip"}
+                                icon={starIcon}>&lt;/TrayIcon>
+                            &lt;ReactTooltip id={"source-code-tooltip"} place={"bottom"} effect={"solid"}>&lt;/ReactTooltip>
+                            &lt;TrayIcon
+                                data-tip={"Vote"}
+                                data-for={"vote-tooltip"}
+                                icon={likeIcon}
+                            >&lt;/TrayIcon>
+
+                            &lt;ReactTooltip id={"vote-tooltip"} place={"bottom"} effect={"solid"}>&lt;/ReactTooltip>
+                        &lt;/Tray>
+
+                    &lt;/Header>
+
+                    {/*Setting view*/}
+                    {state.currentView === "Settings" &amp;&amp;
+                        &lt;Content>
+                            &lt;Input placeholder={"Add  Wolfram api here api here"}
+                                   id={"WolframApiSetting"}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter') {
+                                           setWolframKey(e.target.value);
+                                       }
+                                   }}
+                            >
+
+                            &lt;/Input>
+                            &lt;Button icon={checkmarkIcon} onClick={() => {
+                                setWolframKey(document.getElementById("WolframApiSetting").value);
+                            }}>&lt;/Button>
+                            &lt;Text>{
+
+                            }&lt;/Text>
+
+                        &lt;/Content>
+                    }
+
+                    {state.currentView === "WolframAlpha" &amp;&amp;
+                        &lt;div
+                            style={{
+                                marginLeft: "5%",
+                                marginRight: "5%",
+                                marginBottom: "5%",
+                                backgroundColor: "rgb(0,0,0,0)", border: "none", boxShadow: "none"
+
+                            }}
+                        >
+                            &lt;div>&lt;Grid>&lt;Row>
+                                &lt;Col>
+                                    &lt;Row start={"xs"}>
+                                        {/* DONE add button and icon for this input query*/}
+                                        {/*TODO quick answer when user typing*/}
+                                        {/*TODO render what you mean*/}
+                                        &lt;Col>&lt;Input
+                                            id={"wolframQueryInput"}
+                                            placeholder={"Press Enter to start searching knowledge"} size={Size.L}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    sendQueryToBackGround(e.target.value,"",true,"")
+                                                }
+                                            }}
+                                        />&lt;/Col>
+                                        &lt;Col>
+                                            &lt;ButtonGroup split={true}
+                                                         id={"wisdoom-wolfram-search-button"}>
+                                                &lt;div>
+                                                    &lt;Button
+                                                        id={"wisdoom-wolfram-search-button"}
+                                                        data-for={"wisdoom-wolfram-search-button-tooltip"}
+                                                        data-tip={"Search"}
+                                                        icon={SearchIcon} onClick={() => {
+                                                        sendQueryToBackGround(document.getElementById("wolframQueryInput").value,
+                                                        "",true,"")
+
+                                                    }}> &lt;/Button>
+                                                    &lt;ReactTooltip
+                                                        id={"wisdoom-wolfram-search-button-tooltip"}
+                                                        place={"top"} effect={"solid"}/>
+                                                &lt;/div>
+
+
+                                            &lt;/ButtonGroup>&lt;/Col>
+                                    &lt;/Row>&lt;/Col>
+                                {/*DONE Add a inline loader that remind user that the query is being processed*/}
+
+                            &lt;/Row>&lt;/Grid>&lt;/div>
+                            {/*{state.loadingResult === false ?
+                                renderAssumptions() : &lt;LoaderScreen
+                                    message={"Inject Wis-doom everywhere"}/>}*/}
+                            {renderAssumptions()}
+                            {renderPods()}
+
+                        &lt;/div>
+                    }
+                &lt;/Island>
+            &lt;/Sidebar>
+
+
+        &lt;/div>
+    )
+}
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+
+</body>
+</html>
