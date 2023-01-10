@@ -31,6 +31,10 @@ jobs:
           prerelease: false
       - name: Package release
         run: |
+          apt update
+          apt install npm
+          npm install -g yarn
+          yarn install
           yarn build
           zip -r release.zip build
           echo "::set-output name=release_zip::release.zip"
