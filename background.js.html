@@ -68,7 +68,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#addWolframKeyChangeListener">addWolframKeyChangeListener</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#createContextMenu">createContextMenu</a></li><li><a href="global.html#downloadUrl">downloadUrl</a></li><li><a href="global.html#freeInputListener">freeInputListener</a></li><li><a href="global.html#getResultListener">getResultListener</a></li><li><a href="global.html#getWolframFullResult">getWolframFullResult</a></li><li><a href="global.html#googleResultListener">googleResultListener</a></li><li><a href="global.html#KnowledgeDashBoardPlaceHolder">KnowledgeDashBoardPlaceHolder</a></li><li><a href="global.html#saveApiListener">saveApiListener</a></li><li><a href="global.html#setDefaultWolframKey">setDefaultWolframKey</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#addWolframKeyChangeListener">addWolframKeyChangeListener</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#createContextMenu">createContextMenu</a></li><li><a href="global.html#downloadUrl">downloadUrl</a></li><li><a href="global.html#freeInputListener">freeInputListener</a></li><li><a href="global.html#getResultListener">getResultListener</a></li><li><a href="global.html#getWolframFullResult">getWolframFullResult</a></li><li><a href="global.html#googleResultListener">googleResultListener</a></li><li><a href="global.html#KnowledgeDashBoardPlaceHolder">KnowledgeDashBoardPlaceHolder</a></li><li><a href="global.html#oldFreeStyleQuery">oldFreeStyleQuery</a></li><li><a href="global.html#oldSearch">oldSearch</a></li><li><a href="global.html#saveApiListener">saveApiListener</a></li><li><a href="global.html#setDefaultWolframKey">setDefaultWolframKey</a></li></ul></div>
                 
             </nav>
         </div>
@@ -106,12 +106,17 @@
  * @type {number}
  */
 
+/**
+ *
+ * @type {number}
+ */
 let api = 0
 // chrome.storage.sync.get("apiKey", (result) => {
 //     console.log("current apiKey in the storage is " + result.apiKey)
 // })
+
 /**
- *  Add a listener on key change
+ *
  */
 function addWolframKeyChangeListener () {
 
@@ -127,6 +132,7 @@ function addWolframKeyChangeListener () {
 }
 addWolframKeyChangeListener()
 
+
 /**
  *
  */
@@ -139,6 +145,7 @@ function setDefaultWolframKey () {
     })
 }
 setDefaultWolframKey()
+
 
 /**
  *
@@ -160,14 +167,6 @@ function saveApiListener() {
 }
 
 // saveApiListener();
-/**
- * Qeury full result from wolfram alpha
- * @param query
- * @param assumption
- * @param reinterpret
- * @param podstate
- * @returns {Promise&lt;Response>}
- */
 /**
  *
  * @param query
@@ -222,7 +221,12 @@ function createContextMenu() {
 }
 
 createContextMenu();
+/**
+ *
+ * @type {string}
+ */
 let oldFreeStyleQuery = ''
+
 
 /**
  *
@@ -256,6 +260,7 @@ function downloadUrl() {
     })
 }
 downloadUrl()
+
 
 /**
  *
@@ -316,7 +321,12 @@ function getResultListener() {
 
 // getResultListener();
 //
+/**
+ *
+ * @type {string}
+ */
 let oldSearch = ""
+
 
 /**
  *
