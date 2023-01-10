@@ -10,15 +10,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Generate docs
-        uses: andstor/jsdoc-action@v1
-        with:
-          source_dir: ./src
-          config: jsdoc.json
-          output_dir: ./docs
-          template: better-docs
-          front_page: README.md
-
+      - name: Install yarn
+        run: |
+          sudo apt update
+          sudo apt install npm
+          sudo npm install -g yarn
+      - name: Install dependencies
+        runs: |
+          yarn add --dev jsdoc@3.6.11 better-docs parcel
+      - name: Build doc
+        run: |
+          yarn docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

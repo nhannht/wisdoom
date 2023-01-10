@@ -25,6 +25,7 @@
     "start": "craco start",
     "build_final": "craco build && yarn preprocessing",
     "build": "craco build",
+    "docs": "jsdoc -c jsdoc.json",
     "preprocessing": "bash preprocessing.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
