@@ -1,3 +1,5 @@
+![](https://github.com/nhannht/wisdoom/actions/workflows/github_pages/badge.svg)
+![](https://github.com/nhannht/wisdoom/actions/workflows/release/badge.svg)
 Descendant of Wolfram Panda
 
 <video controls>
