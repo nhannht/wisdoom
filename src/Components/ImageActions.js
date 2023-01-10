@@ -6,6 +6,13 @@ import DownloadIcon from '@jetbrains/icons/download';
 import IssueIcon from '@jetbrains/icons/issue';
 import ReactTooltip from 'react-tooltip';
 // DONE change drop down to button group in image action
+/**
+ * @module
+ * @component
+ * @param subpod
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default  function ImageActions({subpod}){
     const subpodId = "subpod-" + subpod.img.src + "-image-actions"
     const subpodTooltipId = "subpod-" + subpod.img.src + "-image-actions"+"-tooltip"

@@ -7,6 +7,13 @@ import Button from '@jetbrains/ring-ui/dist/button/button';
 import ContentLayout from '@jetbrains/ring-ui/dist/content-layout/content-layout';
 import {useState} from "react";
 
+/**
+ * @module
+ * @component
+ * @param content
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function Demo  ({content})  {
     const [text, setText] = useState(content);
   return (

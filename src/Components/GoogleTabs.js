@@ -13,6 +13,13 @@ import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tooltip from '@jetbrains/ring-ui/dist/tooltip/tooltip';
 import ImageActions from "./ImageActions";
 
+/**
+ * @module
+ * @component
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function GoogleTabs(props) {
     const json = props.data;
 

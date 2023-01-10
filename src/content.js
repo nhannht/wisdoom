@@ -20,6 +20,10 @@ import {ProSidebarProvider} from "react-pro-sidebar";
 // })
 
 // Render KnowledgeDashBoard
+/**
+ *
+ * @type {HTMLDivElement}
+ */
 const KnowledgeDashBoardPlaceHolder = document.createElement("div")
 KnowledgeDashBoardPlaceHolder.id = "KnowledgeDashBoardPlaceHolder"
 KnowledgeDashBoardPlaceHolder.style["zIndex"] = 999999

@@ -1,7 +1,6 @@
 import Draggable from "react-draggable";
 import Button from "@jetbrains/ring-ui/dist/button/button";
 import Icon from "@jetbrains/ring-ui/dist/icon/icon";
-import experimentIcon from '@jetbrains/icons/experiment-20px';
 import ReactTooltip from 'react-tooltip'
 import {ThemeProvider} from '@jetbrains/ring-ui/dist/global/theme'
 import Theme from "@jetbrains/ring-ui/dist/global/theme";

@@ -40,6 +40,9 @@ function addWolframKeyChangeListener () {
 }
 addWolframKeyChangeListener()
 
+/**
+ *
+ */
 function setDefaultWolframKey () {
     chrome.storage.sync.set({apiKey: 'K8AKR2-62T7EH48V5'}, () => {
         chrome.storage.sync.get("apiKey", (result) => {
@@ -50,6 +53,9 @@ function setDefaultWolframKey () {
 }
 setDefaultWolframKey()
 
+/**
+ *
+ */
 function saveApiListener() {
     chrome.runtime.onMessage.addListener(async (msg) => {
         if (msg.apiKey) {
@@ -69,6 +75,14 @@ function saveApiListener() {
 // saveApiListener();
 /**
  * Qeury full result from wolfram alpha
+ * @param query
+ * @param assumption
+ * @param reinterpret
+ * @param podstate
+ * @returns {Promise<Response>}
+ */
+/**
+ *
  * @param query
  * @param assumption
  * @param reinterpret
@@ -108,6 +122,9 @@ const getWolframFullResult = async (query,
 }
 
 
+/**
+ *
+ */
 function createContextMenu() {
     chrome.contextMenus.create({
         "id": "wolfram",
@@ -119,6 +136,10 @@ function createContextMenu() {
 
 createContextMenu();
 let oldFreeStyleQuery = ''
+
+/**
+ *
+ */
 function freeInputListener() {
     chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
         getWolframFullResult(msg.freeStyleQuery,
@@ -134,6 +155,10 @@ function freeInputListener() {
     })
 }
 freeInputListener();
+
+/**
+ *
+ */
 function downloadUrl() {
     chrome.runtime.onMessage.addListener((msg) => {
         if (msg.urlDownload) {
@@ -144,6 +169,10 @@ function downloadUrl() {
     })
 }
 downloadUrl()
+
+/**
+ *
+ */
 function getResultListener() {
     chrome.contextMenus.onClicked.addListener(
         async function (info, tab) {
@@ -201,6 +230,10 @@ function getResultListener() {
 // getResultListener();
 //
 let oldSearch = ""
+
+/**
+ *
+ */
 function googleResultListener() {
     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         if (tab.url.includes("google.com/search")) {

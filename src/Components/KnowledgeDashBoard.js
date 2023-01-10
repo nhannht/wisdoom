@@ -55,7 +55,7 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 export default function KnowledgeDashBoard() {
 // BOOKMARK state of this file
     /**
-     * @desc This is the state of this file
+     * @desc state of this file
      */
     const [state, setState] = useState({
         currentQuery: "",
@@ -69,6 +69,9 @@ export default function KnowledgeDashBoard() {
         loadingResult: false,
     });
 
+    /**
+     * @desc
+     */
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
 
     /**
@@ -156,6 +159,10 @@ export default function KnowledgeDashBoard() {
     }
 
     // DONE render podstate
+    /**
+     *
+     * @returns {*}
+     */
     function renderPods() {
         const queryResult = state.queryResult;
         if (queryResult.success === false) return;
@@ -272,6 +279,9 @@ export default function KnowledgeDashBoard() {
 
     }
 
+    /*
+
+     */
     function renderAssumptions() {
         const queryResult = state.queryResult;
         // console.log("query result", queryResult)
@@ -371,7 +381,16 @@ export default function KnowledgeDashBoard() {
 
     }
 
+
+    /**
+     *
+     * @type {number}
+     */
     const windowHeight = window.innerHeight;
+    /**
+     *
+     * @type {number}
+     */
     const sidebarHeightWithoutHeader = windowHeight - 64;
 
     return (
