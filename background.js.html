@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> background.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#addWolframKeyChangeListener">addWolframKeyChangeListener</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#createContextMenu">createContextMenu</a></li><li><a href="global.html#downloadUrl">downloadUrl</a></li><li><a href="global.html#freeInputListener">freeInputListener</a></li><li><a href="global.html#getResultListener">getResultListener</a></li><li><a href="global.html#getWolframFullResult">getWolframFullResult</a></li><li><a href="global.html#googleResultListener">googleResultListener</a></li><li><a href="global.html#KnowledgeDashBoardPlaceHolder">KnowledgeDashBoardPlaceHolder</a></li><li><a href="global.html#saveApiListener">saveApiListener</a></li><li><a href="global.html#setDefaultWolframKey">setDefaultWolframKey</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>background.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*global chrome*/
+// Put all the javascript code here, that you want to execute in background.
+// function apiSetup() {
+//     chrome.storage.sync.get('apiKey', async (result) => {
+//         console.log('init background script')
+//         if (typeof result.apiKey !== "undefined" || result.apiKey === "") {
+//             api = result.apiKey
+//         } else {
+//             chrome.storage.sync.set({'apiKey': 'K8AKR2-62T7EH48V5'})
+//             api = (await chrome.storage.sync.get('apiKey')).apiKey
+//
+//         }
+//     })
+// }
+// apiSetup();
+// For development only
+/**
+ * Global api
+ * @type {number}
+ */
+
+let api = 0
+// chrome.storage.sync.get("apiKey", (result) => {
+//     console.log("current apiKey in the storage is " + result.apiKey)
+// })
+/**
+ *  Add a listener on key change
+ */
+function addWolframKeyChangeListener () {
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        console.log(changes)
+        if (changes.apiKey) {
+            // api = changes.apiKey.newValue
+        }
+        console.log("we just change apiKey in sync storage,this is ", changes.apiKey.newValue)
+    })
+    console.log("We just add listener for storage change")
+    // setTimeout(()=> console.log("wait 5s"),5000);
+}
+addWolframKeyChangeListener()
+
+/**
+ *
+ */
+function setDefaultWolframKey () {
+    chrome.storage.sync.set({apiKey: 'K8AKR2-62T7EH48V5'}, () => {
+        chrome.storage.sync.get("apiKey", (result) => {
+            api = result.apiKey
+        })
+
+    })
+}
+setDefaultWolframKey()
+
+/**
+ *
+ */
+function saveApiListener() {
+    chrome.runtime.onMessage.addListener(async (msg) => {
+        if (msg.apiKey) {
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icons/icons8-wolfram-alpha-50.png',
+                title: 'Wolfram Alpha setting notification',
+                message: `Your API key is set successfully, it is ${msg.apiKey}`,
+
+            })
+
+
+        }
+    })
+}
+
+// saveApiListener();
+/**
+ * Qeury full result from wolfram alpha
+ * @param query
+ * @param assumption
+ * @param reinterpret
+ * @param podstate
+ * @returns {Promise&lt;Response>}
+ */
+/**
+ *
+ * @param query
+ * @param assumption
+ * @param reinterpret
+ * @param podstate
+ * @returns {Promise&lt;Response>}
+ */
+const getWolframFullResult = async (query,
+                                    assumption ,
+                                    reinterpret="true",
+                                    podstate) => {
+    var myHeaders =await new Headers();
+
+    var requestOptions =  {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    // wait api was change before do anything
+    const q = encodeURIComponent(query);
+    // console.log("the api using in this query is ",api)
+    let baseUrl = 'https://api.wolframalpha.com/'
+    let apiPath = 'v2/query?'
+    let url = new URL(apiPath, baseUrl)
+    url.searchParams.set('appid',api )
+    url.searchParams.set('input', q)
+    url.searchParams.set('output', 'json')
+    url.searchParams.set('reinterpret', 'true')
+    url.searchParams.set('assumption', assumption)
+    if (reinterpret === false){
+        url.searchParams.set('reinterpret','false')
+    }
+    url.searchParams.set('podstate', podstate)
+    url.search = decodeURI(url.search)
+    // /*console.log*/("url for full result is ", url)
+    return fetch(url, requestOptions)
+}
+
+
+/**
+ *
+ */
+function createContextMenu() {
+    chrome.contextMenus.create({
+        "id": "wolfram",
+        "title": "Compute in Wolfram Alpha",
+        "type": "normal",
+        "contexts": ["selection"],
+    });
+}
+
+createContextMenu();
+let oldFreeStyleQuery = ''
+
+/**
+ *
+ */
+function freeInputListener() {
+    chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
+        getWolframFullResult(msg.freeStyleQuery,
+            msg.assumption,
+            msg.reinterpret,
+            msg.podstate
+        ).then((response) => {
+            response.json().then((result) => {
+                sendResponse(result)
+            })
+        })
+        return true
+    })
+}
+freeInputListener();
+
+/**
+ *
+ */
+function downloadUrl() {
+    chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.urlDownload) {
+            chrome.downloads.download({
+                url: msg.urlDownload,
+            })
+        }
+    })
+}
+downloadUrl()
+
+/**
+ *
+ */
+function getResultListener() {
+    chrome.contextMenus.onClicked.addListener(
+        async function (info, tab) {
+            const response = await getWolframFullResult(info.selectionText)
+            const status = response.clone().status
+            const result = await response.clone().json()
+            const text = await response.clone().text()
+
+            /*console.log*/(result.queryresult)
+            if (result.queryresult.success === "false") {
+                if (result.queryresult.didyoumean) {
+                    await chrome.tabs.sendMessage(tab.id, {"didyoumean": result.queryresult.didyoumean})
+                    chrome.notifications.create({
+                        type: 'basic',
+                        iconUrl: 'icons/icons8-wolfram-alpha-50.png',
+                        title: 'Wolfram Alpha',
+                        message: 'Did you mean ' + result.queryresult.didyoumean + '?'
+                    })
+                } else if (result.queryresult.error.msg) {
+                    chrome.notifications.create(
+                        {
+                            message: result.queryresult.error.msg,
+                            type: "basic",
+                            iconUrl: "icons/icons8-wolfram-alpha-50.png",
+                            title: "Wolfram Alpha Error",
+                        })
+                } else {
+                    chrome.notifications.create(
+                        {
+                            message: "Unknown error, most is because you give a query that don't have any meaning",
+                            type: "basic",
+                            iconUrl: "icons/icons8-wolfram-alpha-50.png",
+                            title: "Wolfram Alpha Error",
+                        })
+                }
+                return
+            }
+            if (status !== 200) {
+                chrome.notifications.create(
+                    {
+                        message: "The response status is " + status + ",maybe we have problem with server",
+                        type: "basic",
+                        iconUrl: "icons/icons8-wolfram-alpha-50.png",
+
+                    }
+                )
+                return
+            }
+            await chrome.tabs.sendMessage(tab.id,
+                {"result": text});
+        }
+    )
+}
+
+// getResultListener();
+//
+let oldSearch = ""
+
+/**
+ *
+ */
+function googleResultListener() {
+    chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+        if (tab.url.includes("google.com/search")) {
+            const url = new URL(tab.url)
+            const query = url.searchParams.get("q")
+            if (query === oldSearch) return
+            // Fix the problem  event execute multiple time
+            oldSearch = query
+            const result = await getWolframFullResult(url.searchParams.get("q"))
+            const resultText = await result.clone().text()
+            /*console.log*/("We got result from wolfram alpha")
+            await chrome.tabs.sendMessage(tabId, {"google": resultText});
+        }
+    })
+}
+googleResultListener();
+
+// Make googleResultListener() also work after reload tab
+chrome.webNavigation.onCommitted.addListener((details) => {
+    if (["reload", "link", "typed", "generated"].includes(details.transitionType) &amp;&amp;
+        details.url.includes("google.com/search")) {
+        // console.log("We got reload event")
+
+        chrome.webNavigation.onCompleted.addListener(async function onComplete() {
+            // console.log("We got complete event")
+
+            const url = new URL(details.url)
+            const query = url.searchParams.get("q")
+            if (query === oldSearch) return
+            // Fix the problem  event execute multiple time
+            oldSearch = query
+            const result = await getWolframFullResult(url.searchParams.get("q"))
+            const resultText = await result.clone().text()
+            /*console.log*/("We got result from wolfram alpha")
+            await chrome.tabs.sendMessage(details.tabId, {"google": resultText});
+
+            chrome.webNavigation.onCompleted.removeListener(onComplete);
+        });
+    }
+});
+
+
+
+// Add event listener every time user search google
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
