@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - master
+
 jobs:
-  deploy:
+  github_pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
