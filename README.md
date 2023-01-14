@@ -1,5 +1,6 @@
 [![Github Pages](https://github.com/nhannht/wisdoom/actions/workflows/github_pages.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/github_pages.yml)
 [![Create release](https://github.com/nhannht/wisdoom/actions/workflows/release.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/release.yml)
+
 Descendant of Wolfram Panda
 
 <video controls>
@@ -9,3 +10,6 @@ type=video/mp4>
 
 Rewrite Wolfram Pandas using React [Wolfram Pandas](https://github.com/nhannht/wolfram-panda), this is just a piece of
 bigger system.
+
+TODO : auto generate quick answer when typing
+TODO: generate important keyterm and question from the current site and suggest it to user
