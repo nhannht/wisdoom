@@ -1,13 +1,12 @@
 /* global chrome */
 // BOOKMARK import here
 import Button from '@jetbrains/ring-ui/dist/button/button';
-import {Sidebar, useProSidebar} from "react-pro-sidebar";
+import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar";
 import Island from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
-import Content from "@jetbrains/ring-ui/dist/island/content";
 import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
 import {Input, Size} from "@jetbrains/ring-ui/dist/input/input";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Img from 'react-image';
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tray from "@jetbrains/ring-ui/dist/header/tray";
@@ -19,31 +18,24 @@ import likeIcon from '@jetbrains/icons/vote-empty';
 import Text from '@jetbrains/ring-ui/dist/text/text';
 import '@jetbrains/icons/file-js'
 import alertService from '@jetbrains/ring-ui/dist/alert-service/alert-service';
-import checkmarkIcon from '@jetbrains/icons/checkmark';
 import Panel from "@jetbrains/ring-ui/dist/panel/panel";
 import ImageActions from "./ImageActions";
 import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
 import 'rc-dropdown/assets/index.css';
-import {Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import Link from "@jetbrains/ring-ui/dist/link/link";
-import {Grid, Row, Col} from '@jetbrains/ring-ui/dist/grid/grid';
+import {Col, Grid, Row} from '@jetbrains/ring-ui/dist/grid/grid';
 import SearchIcon from '@jetbrains/icons/search';
 import WolframIcon from '@jetbrains/icons/asterisk';
 import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
 import ReactTooltip from "react-tooltip";
 import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
-// BOOKMARK end of imports
-// DraggableButton.propTypes = {
-//     onStart: PropTypes.func,
-//     onStop: PropTypes.func,
-//     state: PropTypes.shape({
-//         dashBoardHidden: PropTypes.bool,
-//         loadingResult: PropTypes.bool,
-//         settingHidden: PropTypes.bool,
-//         currentView: PropTypes.string,
-//         queryResult: PropTypes.arrayOf(PropTypes.any),
-//         buttonPosition: PropTypes.shape({x: PropTypes.number, y: PropTypes.number})
-//     })
+import * as PropTypes from "prop-types";
+import {SettingsView} from "./SettingsView";
+
+SettingsView.propTypes = {
+    onKeyDown: PropTypes.func,
+    onClick: PropTypes.func
+};
 // };
 /**
  * @desc This is Knowledge Dashboard
@@ -67,11 +59,29 @@ export default function KnowledgeDashBoard() {
         loadingDraggableButton: false,
         loadingResult: false,
     });
+    const [isUsingDemoApi, setIsUsingDemoApi] = useState(undefined);
+    chrome.storage.sync.get("wolframApi", (result) => {
+        if (result.wolframApi === 'DEMO') {
+            setIsUsingDemoApi(true);
+        } else {
+            setIsUsingDemoApi(false);
+        }
+    })
+
 
     /**
      * @desc state of React-Pro-Sidebar
      */
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
+    // Fetch wolfram api in background and set to this component stage
+    // Set wolfram api in background when this component state change
+
+
+
+
+
+
+
 
     /**
      * @function
@@ -98,8 +108,8 @@ export default function KnowledgeDashBoard() {
      * @param podstate
      */
     function sendQueryToBackGround(query,
-                                   assumption ,
-                                   reinterpret ,
+                                   assumption,
+                                   reinterpret,
                                    podstate = ""
     ) {
         // console.log("currentAssumption is",state.currentAssumption)
@@ -149,12 +159,7 @@ export default function KnowledgeDashBoard() {
      * @function
      * @param key
      */
-    function setWolframKey(key) {
-        chrome.storage.sync.set({apiKey: key}, function () {
-            // console.log('Wolfram is set to ' + key);
-        })
-        alertService.successMessage('Wolfram is set to ' + key);
-    }
+
 
     // DONE render podstate
     /**
@@ -240,7 +245,14 @@ export default function KnowledgeDashBoard() {
                 }
                 return (
 
-                    <Grid><Row>
+                    <Grid>
+                        <Row>
+                            {isUsingDemoApi && <Text color={"red"} >
+                                Using demo api, some result may not be available
+                            </Text>
+                            }
+                        </Row>
+                        <Row>
                         <Col>
                             <Row><H4 key={index}>
                                 {subpodTitle}
@@ -502,25 +514,8 @@ export default function KnowledgeDashBoard() {
 
                     {/*Setting view*/}
                     {state.currentView === "Settings" &&
-                        <Content>
-                            <Input placeholder={"Add  Wolfram api here api here"}
-                                   id={"WolframApiSetting"}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter') {
-                                           setWolframKey(e.target.value);
-                                       }
-                                   }}
-                            >
-
-                            </Input>
-                            <Button icon={checkmarkIcon} onClick={() => {
-                                setWolframKey(document.getElementById("WolframApiSetting").value);
-                            }}></Button>
-                            <Text>{
-
-                            }</Text>
-
-                        </Content>
+                        <SettingsView
+                        />
                     }
 
                     {state.currentView === "WolframAlpha" &&
@@ -544,7 +539,7 @@ export default function KnowledgeDashBoard() {
                                             placeholder={"Press Enter to start searching knowledge"} size={Size.L}
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
-                                                    sendQueryToBackGround(e.target.value,"",true,"")
+                                                    sendQueryToBackGround(e.target.value, "", true, "")
                                                 }
                                             }}
                                         /></Col>
@@ -558,7 +553,7 @@ export default function KnowledgeDashBoard() {
                                                         data-tip={"Search"}
                                                         icon={SearchIcon} onClick={() => {
                                                         sendQueryToBackGround(document.getElementById("wolframQueryInput").value,
-                                                        "",true,"")
+                                                            "", true, "")
 
                                                     }}> </Button>
                                                     <ReactTooltip

@@ -1,83 +1,69 @@
 /*global chrome*/
-// Put all the javascript code here, that you want to execute in background.
-// function apiSetup() {
-//     chrome.storage.sync.get('apiKey', async (result) => {
-//         console.log('init background script')
-//         if (typeof result.apiKey !== "undefined" || result.apiKey === "") {
-//             api = result.apiKey
-//         } else {
-//             chrome.storage.sync.set({'apiKey': 'K8AKR2-62T7EH48V5'})
-//             api = (await chrome.storage.sync.get('apiKey')).apiKey
-//
-//         }
-//     })
-// }
-// apiSetup();
-// For development only
+import dotenv from 'dotenv';
+dotenv.config()
 /**
- * Global api
- * @type {number}
+ * @type {number|string}
  */
+let api = undefined;
+let location = undefined;
+let ip = undefined
+let latlong = undefined
 
-/**
- *
- * @type {number}
- */
-let api = 0
-// chrome.storage.sync.get("apiKey", (result) => {
-//     console.log("current apiKey in the storage is " + result.apiKey)
-// })
 
-/**
- *
- */
-function addWolframKeyChangeListener () {
-
+function settingsChangeListener () {
     chrome.storage.onChanged.addListener((changes, namespace) => {
         console.log(changes)
-        if (changes.apiKey) {
-            // api = changes.apiKey.newValue
+        if (changes.wolframApi) {
+            api = changes.wolframApi.newValue
+
         }
-        console.log("we just change apiKey in sync storage,this is ", changes.apiKey.newValue)
+        if (changes.location){
+            location = changes.location.newValue
+
+        }
+        if (changes.ip){
+            ip = changes.ip.newValue
+        }
+        if (changes.latlong){
+            latlong = changes.latlong.newValue
+        }
     })
-    console.log("We just add listener for storage change")
-    // setTimeout(()=> console.log("wait 5s"),5000);
 }
-addWolframKeyChangeListener()
+settingsChangeListener()
 
 
 /**
  *
  */
-function setDefaultWolframKey () {
-    chrome.storage.sync.set({apiKey: 'K8AKR2-62T7EH48V5'}, () => {
-        chrome.storage.sync.get("apiKey", (result) => {
-            api = result.apiKey
-        })
+
+function setDefault() {
+    chrome.storage.sync.get('wolframApi', (result) => {
+        if (!result.wolframApi) {
+            chrome.storage.sync.set({wolframApi: 'DEMO'})
+            api = 'DEMO'
+        } else {
+            api = result.wolframApi
+        }
 
     })
+
+    chrome.storage.sync.get("location", (result) => {
+        location = result.location
+    })
+    chrome.storage.sync.get("ip", (result) => {
+        ip = result.ip
+    })
+    chrome.storage.sync.get("latlong", (result) => {
+        latlong = result.latlong
+    })
 }
-setDefaultWolframKey()
+setDefault()
+
 
 
 /**
  *
  */
-function saveApiListener() {
-    chrome.runtime.onMessage.addListener(async (msg) => {
-        if (msg.apiKey) {
-            chrome.notifications.create({
-                type: 'basic',
-                iconUrl: 'icons/icons8-wolfram-alpha-50.png',
-                title: 'Wolfram Alpha setting notification',
-                message: `Your API key is set successfully, it is ${msg.apiKey}`,
-
-            })
-
-
-        }
-    })
-}
 
 // saveApiListener();
 /**
@@ -111,12 +97,15 @@ const getWolframFullResult = async (query,
     url.searchParams.set('output', 'json')
     url.searchParams.set('reinterpret', 'true')
     url.searchParams.set('assumption', assumption)
+    url.searchParams.set('location', location)
+    url.searchParams.set('ip', ip)
+    url.searchParams.set('latlong', latlong)
     if (reinterpret === false){
         url.searchParams.set('reinterpret','false')
     }
     url.searchParams.set('podstate', podstate)
     url.search = decodeURI(url.search)
-    // /*console.log*/("url for full result is ", url)
+    console.log("url for full result is ", url)
     return fetch(url, requestOptions)
 }
 
@@ -152,6 +141,7 @@ function freeInputListener() {
             msg.podstate
         ).then((response) => {
             response.json().then((result) => {
+                console.log("The result is ", result)
                 sendResponse(result)
             })
         })
