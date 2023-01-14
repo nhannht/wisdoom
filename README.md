@@ -1,5 +1,7 @@
 [![Github Pages](https://github.com/nhannht/wisdoom/actions/workflows/github_pages.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/github_pages.yml)
 [![Create release](https://github.com/nhannht/wisdoom/actions/workflows/release.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/release.yml)
+[![Create beta release](https://github.com/nhannht/wisdoom/actions/workflows/release-beta.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/release-beta.yml)
+
 
 Descendant of Wolfram Panda
 
