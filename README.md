@@ -13,5 +13,16 @@ type=video/mp4>
 Rewrite Wolfram Pandas using React [Wolfram Pandas](https://github.com/nhannht/wolfram-panda), this is just a piece of
 bigger system.
 
-TODO : auto generate quick answer when typing
-TODO: generate important keyterm and question from the current site and suggest it to user
+### Showcases
+##### Curiosity about anything, just ask Wisdoom
+![pic1](public/showcases/pic1.png)
+
+##### Wisdoom is very knowledgeable, they will answer you even it is wrong answers
+![pic2](public/showcases/pic2.png)
+![pic3](public/showcases/pic3.png)
+
+##### Change any assumption to get different answers
+![pic4](public/showcases/pic4.png)
+
+##### Flexible settings to enrich your experience
+![pic5](public/showcases/pic5.png)
