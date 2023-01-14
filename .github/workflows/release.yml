@@ -1,9 +1,14 @@
 name: Create release
 on:
-  workflow_run:
-    workflows: ["GitHub pages"]
-    types:
-      - completed
+  push:
+    branches:
+      - master
+#  workflow_run:
+#    workflows: ["GitHub pages"]
+#    types:
+#      - completed
+
+
 
 jobs:
   release:
@@ -57,6 +62,6 @@ jobs:
       - name: publish release
         uses: eregon/publish-release@v1
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            release_id: ${{ steps.create_release.outputs.id }}
+          release_id: ${{ steps.create_release.outputs.id }}
