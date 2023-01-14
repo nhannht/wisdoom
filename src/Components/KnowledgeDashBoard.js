@@ -54,7 +54,6 @@ export default function KnowledgeDashBoard() {
         queryResult: [],
         dashBoardHidden: true,
         buttonPosition: {x: 0, y: 0},
-        settingHidden: true,
         currentView: 'WolframAlpha',
         loadingDraggableButton: false,
         loadingResult: false,
@@ -75,12 +74,6 @@ export default function KnowledgeDashBoard() {
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
     // Fetch wolfram api in background and set to this component stage
     // Set wolfram api in background when this component state change
-
-
-
-
-
-
 
 
     /**
@@ -246,34 +239,29 @@ export default function KnowledgeDashBoard() {
                 return (
 
                     <Grid>
+
                         <Row>
-                            {isUsingDemoApi && <Text color={"red"} >
-                                Using demo api, some result may not be available
-                            </Text>
-                            }
-                        </Row>
-                        <Row>
-                        <Col>
-                            <Row><H4 key={index}>
-                                {subpodTitle}
-                            </H4></Row>
-                            {subpod.states && <Text>Other states: {renderSubpodStates}</Text>}
-                            {/*TODO make those image ease in out*/}
-                            <Row><Img src={subpodImage}
-                                      height={height}
-                                      width={width}
-                                      key={subpodImage}
-                                      loader={<Loader/>}
-                                      unloader={<Text>Image not found</Text>}
-                                      style={{animation: "slideIn 1s forwards"}}
-                            /></Row>
-                        </Col>
-                        <Col xs={12}>
-                            <Row end={"xs"}>
-                                <Col xs={6}><ImageActions subpod={subpod}/></Col>
-                            </Row>
-                        </Col>
-                    </Row></Grid>
+                            <Col>
+                                <Row><H4 key={index}>
+                                    {subpodTitle}
+                                </H4></Row>
+                                {subpod.states && <Text>Other states: {renderSubpodStates}</Text>}
+                                {/*TODO make those image ease in out*/}
+                                <Row><Img src={subpodImage}
+                                          height={height}
+                                          width={width}
+                                          key={subpodImage}
+                                          loader={<Loader/>}
+                                          unloader={<Text>Image not found</Text>}
+                                          style={{animation: "slideIn 1s forwards"}}
+                                /></Row>
+                            </Col>
+                            <Col xs={12}>
+                                <Row end={"xs"}>
+                                    <Col xs={6}><ImageActions subpod={subpod}/></Col>
+                                </Row>
+                            </Col>
+                        </Row></Grid>
                 )
             })
             return (
@@ -512,6 +500,17 @@ export default function KnowledgeDashBoard() {
 
                     </Header>
 
+                    {isUsingDemoApi && <Panel><Text>
+                        Using demo api. Only some queries like "Weather" work!. Go to <Link
+                        onClick={() => {
+                            setState({...state, currentView: "Settings"})
+                        }
+                        }
+                        active={false}>settings</Link> to add your own api key. Get your api key
+                        from <Link
+                        href={"https://developer.wolframalpha.com/portal/myapps/"}>here</Link>
+                    </Text></Panel>
+                    }
                     {/*Setting view*/}
                     {state.currentView === "Settings" &&
                         <SettingsView

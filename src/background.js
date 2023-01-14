@@ -1,6 +1,4 @@
 /*global chrome*/
-import dotenv from 'dotenv';
-dotenv.config()
 /**
  * @type {number|string}
  */
