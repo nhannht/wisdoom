@@ -104,7 +104,6 @@ export default function KnowledgeDashBoard() {
         queryResult: [],
         dashBoardHidden: true,
         buttonPosition: {x: 0, y: 0},
-        settingHidden: true,
         currentView: 'WolframAlpha',
         loadingDraggableButton: false,
         loadingResult: false,
@@ -125,12 +124,6 @@ export default function KnowledgeDashBoard() {
     const {collapseSidebar, toggleSidebar, collapsed} = useProSidebar();
     // Fetch wolfram api in background and set to this component stage
     // Set wolfram api in background when this component state change
-
-
-
-
-
-
 
 
     /**
@@ -296,34 +289,29 @@ export default function KnowledgeDashBoard() {
                 return (
 
                     &lt;Grid>
+
                         &lt;Row>
-                            {isUsingDemoApi &amp;&amp; &lt;Text color={"red"} >
-                                Using demo api, some result may not be available
-                            &lt;/Text>
-                            }
-                        &lt;/Row>
-                        &lt;Row>
-                        &lt;Col>
-                            &lt;Row>&lt;H4 key={index}>
-                                {subpodTitle}
-                            &lt;/H4>&lt;/Row>
-                            {subpod.states &amp;&amp; &lt;Text>Other states: {renderSubpodStates}&lt;/Text>}
-                            {/*TODO make those image ease in out*/}
-                            &lt;Row>&lt;Img src={subpodImage}
-                                      height={height}
-                                      width={width}
-                                      key={subpodImage}
-                                      loader={&lt;Loader/>}
-                                      unloader={&lt;Text>Image not found&lt;/Text>}
-                                      style={{animation: "slideIn 1s forwards"}}
-                            />&lt;/Row>
-                        &lt;/Col>
-                        &lt;Col xs={12}>
-                            &lt;Row end={"xs"}>
-                                &lt;Col xs={6}>&lt;ImageActions subpod={subpod}/>&lt;/Col>
-                            &lt;/Row>
-                        &lt;/Col>
-                    &lt;/Row>&lt;/Grid>
+                            &lt;Col>
+                                &lt;Row>&lt;H4 key={index}>
+                                    {subpodTitle}
+                                &lt;/H4>&lt;/Row>
+                                {subpod.states &amp;&amp; &lt;Text>Other states: {renderSubpodStates}&lt;/Text>}
+                                {/*TODO make those image ease in out*/}
+                                &lt;Row>&lt;Img src={subpodImage}
+                                          height={height}
+                                          width={width}
+                                          key={subpodImage}
+                                          loader={&lt;Loader/>}
+                                          unloader={&lt;Text>Image not found&lt;/Text>}
+                                          style={{animation: "slideIn 1s forwards"}}
+                                />&lt;/Row>
+                            &lt;/Col>
+                            &lt;Col xs={12}>
+                                &lt;Row end={"xs"}>
+                                    &lt;Col xs={6}>&lt;ImageActions subpod={subpod}/>&lt;/Col>
+                                &lt;/Row>
+                            &lt;/Col>
+                        &lt;/Row>&lt;/Grid>
                 )
             })
             return (
@@ -562,6 +550,17 @@ export default function KnowledgeDashBoard() {
 
                     &lt;/Header>
 
+                    {isUsingDemoApi &amp;&amp; &lt;Panel>&lt;Text>
+                        Using demo api. Only some queries like "Weather" work!. Go to &lt;Link
+                        onClick={() => {
+                            setState({...state, currentView: "Settings"})
+                        }
+                        }
+                        active={false}>settings&lt;/Link> to add your own api key. Get your api key
+                        from &lt;Link
+                        href={"https://developer.wolframalpha.com/portal/myapps/"}>here&lt;/Link>
+                    &lt;/Text>&lt;/Panel>
+                    }
                     {/*Setting view*/}
                     {state.currentView === "Settings" &amp;&amp;
                         &lt;SettingsView
