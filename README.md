@@ -26,3 +26,6 @@ bigger system.
 
 ##### Flexible settings to enrich your experience
 ![pic5](public/showcases/pic5.png)
+
+##### Quick answer when typing if available
+![pic6](public/showcases/pic6.png)

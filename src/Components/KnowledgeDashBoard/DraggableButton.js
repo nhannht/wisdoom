@@ -6,6 +6,7 @@ import {ThemeProvider} from '@jetbrains/ring-ui/dist/global/theme'
 import Theme from "@jetbrains/ring-ui/dist/global/theme";
 import LoaderInline from '@jetbrains/ring-ui/dist/loader-inline/loader-inline';
 import {ReactComponent as WisdoomIcon} from '../../icons/wisdoomIcon.svg';
+import {useState} from "react";
 /**
  * @desc DraggableButton is a React component that renders a draggable button with an icon, tooltip and loader.
  * @class DraggableButton
@@ -23,10 +24,7 @@ export default function DraggableButton(props) {
                      bottom: "20%", right: "20%"
                 }}
             >
-                <ThemeProvider theme={Theme.DARK}>
-                    <Button
-
-
+                <Button
                     data-tip={"Knowledge DashBoard"}
                     data-for={"KnowledgeDashBoard-tooltip"}
                     style={{
@@ -45,7 +43,6 @@ export default function DraggableButton(props) {
 
                         margin={2}/>
                 </Button>
-                </ThemeProvider>
                 <ReactTooltip id={"KnowledgeDashBoard-tooltip"} type={"dark"}
                     place={"top"} effect={"solid"}/>
                 </div>
