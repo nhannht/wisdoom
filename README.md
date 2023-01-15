@@ -15,17 +15,17 @@ bigger system.
 
 ### Showcases
 ##### Curiosity about anything, just ask Wisdoom
-![pic1](public/showcases/pic1.png)
+![pic1](showcases/pic1.png)
 
 ##### Wisdoom is very knowledgeable, they will answer you even it is wrong answers
-![pic2](public/showcases/pic2.png)
-![pic3](public/showcases/pic3.png)
+![pic2](showcases/pic2.png)
+![pic3](showcases/pic3.png)
 
 ##### Change any assumption to get different answers
-![pic4](public/showcases/pic4.png)
+![pic4](showcases/pic4.png)
 
 ##### Flexible settings to enrich your experience
-![pic5](public/showcases/pic5.png)
+![pic5](showcases/pic5.png)
 
 ##### Quick answer when typing if available
-![pic6](public/showcases/pic6.png)
+![pic6](showcases/pic6.png)
