@@ -5,7 +5,6 @@ import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar
 import Island from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
 import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
-import {Input, Size} from "@jetbrains/ring-ui/dist/input/input";
 import {useEffect, useState} from "react";
 import Img from 'react-image';
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
@@ -17,26 +16,29 @@ import starIcon from '@jetbrains/icons/star-empty';
 import likeIcon from '@jetbrains/icons/vote-empty';
 import Text from '@jetbrains/ring-ui/dist/text/text';
 import '@jetbrains/icons/file-js'
-import alertService from '@jetbrains/ring-ui/dist/alert-service/alert-service';
 import Panel from "@jetbrains/ring-ui/dist/panel/panel";
 import ImageActions from "./ImageActions";
 import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
 import 'rc-dropdown/assets/index.css';
 import Link from "@jetbrains/ring-ui/dist/link/link";
 import {Col, Grid, Row} from '@jetbrains/ring-ui/dist/grid/grid';
-import SearchIcon from '@jetbrains/icons/search';
 import WolframIcon from '@jetbrains/icons/asterisk';
 import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
 import ReactTooltip from "react-tooltip";
 import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 import * as PropTypes from "prop-types";
 import {SettingsView} from "./SettingsView";
+import {WolframAlphaSearchArea} from "./WolframAlphaSearchArea";
+import {Readability} from "@mozilla/readability"
+import {uniq, filter} from "lodash";
+import Badge from "@jetbrains/ring-ui/dist/badge/badge";
 
 SettingsView.propTypes = {
     onKeyDown: PropTypes.func,
     onClick: PropTypes.func
 };
-// };
+
+
 /**
  * @desc This is Knowledge Dashboard
  * @class KnowledgeDashBoard
@@ -44,6 +46,8 @@ SettingsView.propTypes = {
  * @todo How to design a program
  */
 export default function KnowledgeDashBoard() {
+
+
 // BOOKMARK state of this file
     /**
      * @desc state of this file
@@ -66,8 +70,38 @@ export default function KnowledgeDashBoard() {
             setIsUsingDemoApi(false);
         }
     })
+    const [currentPageReadability, setCurrentPageReadability] = useState(undefined);
+    const [entities, setEntities] = useState(undefined);
+    window.onload = () => {
+        console.log("page is fully loaded")
+        const clonedDocument = document.cloneNode(true)
+        const pageReadability = new Readability(clonedDocument).parse()
+        if (currentPageReadability !== pageReadability) {
+            setCurrentPageReadability(pageReadability)
+        }
+    }
 
+    useEffect(() => {
+        chrome.runtime.sendMessage({textRazorEntitiesQuery: currentPageReadability?.textContent}, (result) => {
+            const entities = result.response.entities
+            const highConfidenceAndRelevanceEntities = filter(entities, (entity) => entity.confidenceScore > 5.0 && entity.relevanceScore > 0.9)
+            const uniqueEntitiesId = uniq(highConfidenceAndRelevanceEntities.map((entity) => entity.entityId))
+            setEntities(uniqueEntitiesId)
+        })
+    }, [currentPageReadability])
 
+    const renderEntities = () => {
+        if (entities) {
+            return entities.map(entity => {
+                return (<Badge valid
+                               style={{cursor: 'pointer'}}
+                               onClick={() => {
+                                   sendQueryToBackGround(entity, undefined, undefined, undefined)
+                               }}
+                >{entity}</Badge>)
+            })
+        }
+    }
     /**
      * @desc state of React-Pro-Sidebar
      */
@@ -527,48 +561,28 @@ export default function KnowledgeDashBoard() {
 
                             }}
                         >
-                            <div><Grid><Row>
-                                <Col>
-                                    <Row start={"xs"}>
-                                        {/* DONE add button and icon for this input query*/}
-                                        {/*TODO quick answer when user typing*/}
-                                        {/*TODO render what you mean*/}
-                                        <Col><Input
-                                            id={"wolframQueryInput"}
-                                            placeholder={"Press Enter to start searching knowledge"} size={Size.L}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    sendQueryToBackGround(e.target.value, "", true, "")
-                                                }
-                                            }}
-                                        /></Col>
-                                        <Col>
-                                            <ButtonGroup split={true}
-                                                         id={"wisdoom-wolfram-search-button"}>
-                                                <div>
-                                                    <Button
-                                                        id={"wisdoom-wolfram-search-button"}
-                                                        data-for={"wisdoom-wolfram-search-button-tooltip"}
-                                                        data-tip={"Search"}
-                                                        icon={SearchIcon} onClick={() => {
-                                                        sendQueryToBackGround(document.getElementById("wolframQueryInput").value,
-                                                            "", true, "")
+                            <WolframAlphaSearchArea onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    sendQueryToBackGround(e.target.value, "", true, "")
+                                }
+                            }} onClick={() => {
+                                sendQueryToBackGround(document.getElementById("wolframQueryInput").value,
+                                    "", true, "")
 
-                                                    }}> </Button>
-                                                    <ReactTooltip
-                                                        id={"wisdoom-wolfram-search-button-tooltip"}
-                                                        place={"top"} effect={"solid"}/>
-                                                </div>
+                            }}
 
 
-                                            </ButtonGroup></Col>
-                                    </Row></Col>
-                                {/*DONE Add a inline loader that remind user that the query is being processed*/}
 
-                            </Row></Grid></div>
+                            />
                             {/*{state.loadingResult === false ?
                                 renderAssumptions() : <LoaderScreen
                                     message={"Inject Wis-doom everywhere"}/>}*/}
+                            {currentPageReadability &&
+                                <Panel>
+                                    {renderEntities()}
+
+                                </Panel>
+                            }
                             {renderAssumptions()}
                             {renderPods()}
 

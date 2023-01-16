@@ -7,26 +7,31 @@ let location = undefined;
 let ip = undefined
 let latlong = undefined
 
+let textRazorApi = undefined
 
-function settingsChangeListener () {
+function settingsChangeListener() {
     chrome.storage.onChanged.addListener((changes, namespace) => {
         console.log(changes)
         if (changes.wolframApi) {
             api = changes.wolframApi.newValue
 
         }
-        if (changes.location){
+        if (changes.location) {
             location = changes.location.newValue
 
         }
-        if (changes.ip){
+        if (changes.ip) {
             ip = changes.ip.newValue
         }
-        if (changes.latlong){
+        if (changes.latlong) {
             latlong = changes.latlong.newValue
+        }
+        if (changes.textRazorApi) {
+            textRazorApi = changes.textRazorApi.newValue
         }
     })
 }
+
 settingsChangeListener()
 
 
@@ -55,8 +60,8 @@ function setDefault() {
         latlong = result.latlong
     })
 }
-setDefault()
 
+setDefault()
 
 
 /**
@@ -73,24 +78,23 @@ setDefault()
  * @returns {Promise<Response>}
  */
 const getWolframFullResult = async (query,
-                                    assumption ,
-                                    reinterpret="true",
+                                    assumption,
+                                    reinterpret = "true",
                                     podstate) => {
-    var myHeaders =await new Headers();
+    var myHeaders = await new Headers();
 
-    var requestOptions =  {
+    var requestOptions = {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
     };
 
-    // wait api was change before do anything
     const q = encodeURIComponent(query);
     // console.log("the api using in this query is ",api)
     let baseUrl = 'https://api.wolframalpha.com/'
     let apiPath = 'v2/query?'
     let url = new URL(apiPath, baseUrl)
-    url.searchParams.set('appid',api )
+    url.searchParams.set('appid', api)
     url.searchParams.set('input', q)
     url.searchParams.set('output', 'json')
     url.searchParams.set('reinterpret', 'true')
@@ -98,8 +102,8 @@ const getWolframFullResult = async (query,
     url.searchParams.set('location', location)
     url.searchParams.set('ip', ip)
     url.searchParams.set('latlong', latlong)
-    if (reinterpret === false){
-        url.searchParams.set('reinterpret','false')
+    if (reinterpret === false) {
+        url.searchParams.set('reinterpret', 'false')
     }
     url.searchParams.set('podstate', podstate)
     url.search = decodeURI(url.search)
@@ -107,10 +111,78 @@ const getWolframFullResult = async (query,
     return fetch(url, requestOptions)
 }
 
+const getWolframShortResult = async (query) => {
+    var myHeaders = await new Headers();
 
-/**
- *
- */
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    const q = encodeURIComponent(query);
+    // console.log("the api using in this query is ",api)
+    let baseUrl = 'https://api.wolframalpha.com/'
+    let apiPath = 'v1/spoken?'
+    let url = new URL(apiPath, baseUrl)
+    url.searchParams.set('appid', api)
+    url.searchParams.set('i', q)
+    url.search = decodeURI(url.search)
+    console.log("url for full result is ", url)
+    return fetch(url, requestOptions)
+}
+
+const getTextRazorResultEntities = async (query) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("x-textrazor-key", textRazorApi);
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("extractors", "entities");
+    urlencoded.append("text", query);
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    return fetch("https://api.textrazor.com", requestOptions)
+
+}
+const textRazorEntitiesListener = () => {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+        if (msg.textRazorEntitiesQuery) {
+            getTextRazorResultEntities(msg.textRazorEntitiesQuery).then((response) => {
+                response.json().then((result) => {
+                    console.log("The result is ", result)
+                    sendResponse(result)
+                })
+            })
+        }
+    })
+}
+
+textRazorEntitiesListener()
+
+
+
+
+const shortWolframAnswerListener = () => {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+        if (msg.shortAnswerWolframQuery) {
+            getWolframShortResult(msg.shortAnswerWolframQuery).then((response) => {
+                response.text().then((result) => {
+                    console.log("The short answer result is ", result)
+                    sendResponse(result)
+                })
+            })
+        }
+    })
+}
+shortWolframAnswerListener()
+
 // function createContextMenu() {
 //     chrome.contextMenus.create({
 //         "id": "wolfram",
@@ -132,20 +204,23 @@ let oldFreeStyleQuery = ''
  *
  */
 function freeInputListener() {
-    chrome.runtime.onMessage.addListener((msg, sender,sendResponse) => {
-        getWolframFullResult(msg.freeStyleQuery,
-            msg.assumption,
-            msg.reinterpret,
-            msg.podstate
-        ).then((response) => {
-            response.json().then((result) => {
-                console.log("The result is ", result)
-                sendResponse(result)
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+        if (msg.freeStyleQuery) {
+            getWolframFullResult(msg.freeStyleQuery,
+                msg.assumption,
+                msg.reinterpret,
+                msg.podstate
+            ).then((response) => {
+                response.json().then((result) => {
+                    console.log("The result is ", result)
+                    sendResponse(result)
+                })
             })
-        })
+        }
         return true
     })
 }
+
 freeInputListener();
 
 /**
@@ -160,6 +235,7 @@ function downloadUrl() {
         }
     })
 }
+
 downloadUrl()
 
 
@@ -229,9 +305,9 @@ downloadUrl()
 let oldSearch = ""
 
 
-/**
- * @function
- */
+    /**
+     * @function
+     */
 // function googleResultListener() {
 //     chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
 //         if (tab.url.includes("google.com/search")) {
@@ -250,32 +326,32 @@ let oldSearch = ""
 // googleResultListener();
 
 // Make googleResultListener() also work after reload tab
-/*chrome.webNavigation.onCommitted.addListener((details) => {
-    if (["reload", "link", "typed", "generated"].includes(details.transitionType) &&
-        details.url.includes("google.com/search")) {
-        // console.log("We got reload event")
+    /*chrome.webNavigation.onCommitted.addListener((details) => {
+        if (["reload", "link", "typed", "generated"].includes(details.transitionType) &&
+            details.url.includes("google.com/search")) {
+            // console.log("We got reload event")
 
-        chrome.webNavigation.onCompleted.addListener(async function onComplete() {
-            // console.log("We got complete event")
+            chrome.webNavigation.onCompleted.addListener(async function onComplete() {
+                // console.log("We got complete event")
 
-            const url = new URL(details.url)
-            const query = url.searchParams.get("q")
-            if (query === oldSearch) return
-            // Fix the problem  event execute multiple time
-            oldSearch = query
-            const result = await getWolframFullResult(url.searchParams.get("q"))
-            const resultText = await result.clone().text()
-            /!*console.log*!/("We got result from wolfram alpha")
-            await chrome.tabs.sendMessage(details.tabId, {"google": resultText});
+                const url = new URL(details.url)
+                const query = url.searchParams.get("q")
+                if (query === oldSearch) return
+                // Fix the problem  event execute multiple time
+                oldSearch = query
+                const result = await getWolframFullResult(url.searchParams.get("q"))
+                const resultText = await result.clone().text()
+                /!*console.log*!/("We got result from wolfram alpha")
+                await chrome.tabs.sendMessage(details.tabId, {"google": resultText});
 
-            chrome.webNavigation.onCompleted.removeListener(onComplete);
-        });
-    }
-})*/;
-
+                chrome.webNavigation.onCompleted.removeListener(onComplete);
+            });
+        }
+    })*/;
 
 
 // Add event listener every time user search google
+
 
 
 

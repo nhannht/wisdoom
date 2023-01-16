@@ -62,7 +62,10 @@ export function SettingsView(props) {
     chrome.storage.sync.get("ip", (result) => {
         setIp(result.ip)
     })
-
+    const [textRazorApi, setTextRazorApi] = useState(undefined);
+    chrome.storage.sync.get("textRazorApi", (result) => {
+        setTextRazorApi(result.textRazorApi)
+    })
 
 
     return <Content><Grid>
@@ -95,7 +98,8 @@ export function SettingsView(props) {
             }}
             onClick={() => {
                 const value = document.getElementById("location-input-id").value;
-                chrome.storage.sync.set({'location': value}, () => { })
+                chrome.storage.sync.set({'location': value}, () => {
+                })
             }}
 
         />
@@ -111,11 +115,12 @@ export function SettingsView(props) {
             }}
             onClick={() => {
                 const value = document.getElementById("latlong-input-id").value;
-                chrome.storage.sync.set({'latlong': value}, () => { })
+                chrome.storage.sync.set({'latlong': value}, () => {
+                })
             }}
 
         />
-       <SettingOption
+        <SettingOption
             inputId={"ip-input-id"}
             value={ip}
             placeholder={"IP, eg:192.168.1.1"}
@@ -127,11 +132,28 @@ export function SettingsView(props) {
             }}
             onClick={() => {
                 const value = document.getElementById("ip-input-id").value;
-                chrome.storage.sync.set({'ip': value}, () => { })
+                chrome.storage.sync.set({'ip': value}, () => {
+                })
             }}
 
         />
+        <SettingOption
+            inputId={"textrazor-api-input-id"}
+            value={textRazorApi}
+            placeholder={"TextRazor Api Key"}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                    chrome.storage.sync.set({'textRazorApi': e.target.value}, () => {
+                    })
+                }
+            }}
+            onClick={() => {
+                const value = document.getElementById("textrazor-api-input-id").value;
+                chrome.storage.sync.set({'textRazorApi': value}, () => {
+                })
+            }}
 
+        />
 
     </Grid></Content>;
 }
