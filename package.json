@@ -5,10 +5,11 @@
   "dependencies": {
     "@jetbrains/icons": "^3.20.0",
     "@jetbrains/ring-ui": "^5.0.85",
+    "@mozilla/readability": "^0.4.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "cheerio": "^1.0.0-rc.12",
+    "lodash": "^4.17.21",
     "rc-dropdown": "^4.0.1",
     "rc-menu": "^9.8.1",
     "react": "^18.2.0",

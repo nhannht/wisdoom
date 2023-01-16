@@ -7,8 +7,7 @@ import '@jetbrains/ring-ui/dist/style.css';
 // import {GoogleTabs} from "./Components/GoogleTabs";
 import KnowledgeDashBoard from "./Components/KnowledgeDashBoard";
 import {ProSidebarProvider} from "react-pro-sidebar";
-// import * as cheerio from 'cheerio';
-// Render at appbar
+// import cheerio
 // chrome.runtime.onMessage.addListener((msg) => {
 //     if (msg.google) {
 //         const resultJSON = JSON.parse(msg.google)
@@ -24,6 +23,7 @@ import {ProSidebarProvider} from "react-pro-sidebar";
  *
  * @type {HTMLDivElement}
  */
+
 const KnowledgeDashBoardPlaceHolder = document.createElement("div")
 KnowledgeDashBoardPlaceHolder.id = "KnowledgeDashBoardPlaceHolder"
 KnowledgeDashBoardPlaceHolder.style["zIndex"] = 999999
@@ -34,8 +34,5 @@ ReactDOM.render(
         <KnowledgeDashBoard/>
     </ProSidebarProvider>, document.getElementById('KnowledgeDashBoardPlaceHolder'))
 // Extract page content with cheerio
-// const $ = cheerio.load(document.body.innerHTML)
-// console.log($)
-// console.log("This is the text from cheerio",$.textContent)
 
 

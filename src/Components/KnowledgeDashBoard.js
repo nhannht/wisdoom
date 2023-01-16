@@ -5,7 +5,7 @@ import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar
 import Island from "@jetbrains/ring-ui/dist/island/island";
 import Header from "@jetbrains/ring-ui/dist/header/header";
 import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Img from 'react-image';
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
 import Tray from "@jetbrains/ring-ui/dist/header/tray";
@@ -29,6 +29,9 @@ import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 import * as PropTypes from "prop-types";
 import {SettingsView} from "./SettingsView";
 import {WolframAlphaSearchArea} from "./WolframAlphaSearchArea";
+import {Readability} from "@mozilla/readability"
+import {uniq, filter} from "lodash";
+import Badge from "@jetbrains/ring-ui/dist/badge/badge";
 
 SettingsView.propTypes = {
     onKeyDown: PropTypes.func,
@@ -43,6 +46,8 @@ SettingsView.propTypes = {
  * @todo How to design a program
  */
 export default function KnowledgeDashBoard() {
+
+
 // BOOKMARK state of this file
     /**
      * @desc state of this file
@@ -65,8 +70,38 @@ export default function KnowledgeDashBoard() {
             setIsUsingDemoApi(false);
         }
     })
+    const [currentPageReadability, setCurrentPageReadability] = useState(undefined);
+    const [entities, setEntities] = useState(undefined);
+    window.onload = () => {
+        console.log("page is fully loaded")
+        const clonedDocument = document.cloneNode(true)
+        const pageReadability = new Readability(clonedDocument).parse()
+        if (currentPageReadability !== pageReadability) {
+            setCurrentPageReadability(pageReadability)
+        }
+    }
 
+    useEffect(() => {
+        chrome.runtime.sendMessage({textRazorEntitiesQuery: currentPageReadability?.textContent}, (result) => {
+            const entities = result.response.entities
+            const highConfidenceAndRelevanceEntities = filter(entities, (entity) => entity.confidenceScore > 5.0 && entity.relevanceScore > 0.9)
+            const uniqueEntitiesId = uniq(highConfidenceAndRelevanceEntities.map((entity) => entity.entityId))
+            setEntities(uniqueEntitiesId)
+        })
+    }, [currentPageReadability])
 
+    const renderEntities = () => {
+        if (entities) {
+            return entities.map(entity => {
+                return (<Badge valid
+                               style={{cursor: 'pointer'}}
+                               onClick={() => {
+                                   sendQueryToBackGround(entity, undefined, undefined, undefined)
+                               }}
+                >{entity}</Badge>)
+            })
+        }
+    }
     /**
      * @desc state of React-Pro-Sidebar
      */
@@ -534,10 +569,20 @@ export default function KnowledgeDashBoard() {
                                 sendQueryToBackGround(document.getElementById("wolframQueryInput").value,
                                     "", true, "")
 
-                            }}/>
+                            }}
+
+
+
+                            />
                             {/*{state.loadingResult === false ?
                                 renderAssumptions() : <LoaderScreen
                                     message={"Inject Wis-doom everywhere"}/>}*/}
+                            {currentPageReadability &&
+                                <Panel>
+                                    {renderEntities()}
+
+                                </Panel>
+                            }
                             {renderAssumptions()}
                             {renderPods()}
 

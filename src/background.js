@@ -7,8 +7,7 @@ let location = undefined;
 let ip = undefined
 let latlong = undefined
 
-let textRazorApi = "92a3405afc99b58f603957b79b7766a804d49a192baff7d5dc47a174"
-
+let textRazorApi = undefined
 
 function settingsChangeListener() {
     chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -149,10 +148,7 @@ const getTextRazorResultEntities = async (query) => {
         redirect: 'follow'
     };
 
-    fetch("https://api.textrazor.com", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+    return fetch("https://api.textrazor.com", requestOptions)
 
 }
 const textRazorEntitiesListener = () => {

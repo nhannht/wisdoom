@@ -29,3 +29,6 @@ bigger system.
 
 ##### Quick answer when typing if available
 ![pic6](showcases/pic6.png)
+
+##### Suggest most relevant entities (require TextRazor api key)
+![pic7](showcases/pic7.png)

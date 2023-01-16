@@ -8,10 +8,7 @@ import Input, {Size} from "@jetbrains/ring-ui/dist/input/input";
 import {useEffect, useState} from "react";
 import Text from "@jetbrains/ring-ui/dist/text/text";
 
-function sendQueryForShortAnswerToBackGround(query, target) {
 
-
-}
 
 export function WolframAlphaSearchArea(props) {
     const [query, setQuery] = useState("");
@@ -24,6 +21,8 @@ export function WolframAlphaSearchArea(props) {
                 chrome.runtime.sendMessage({shortAnswerWolframQuery: query}, (result) => {
                     setQuickAnswer(result)
                 });
+            } else {
+                setQuickAnswer(undefined)
             }
             // Send Axios request here
         }, 1000)
