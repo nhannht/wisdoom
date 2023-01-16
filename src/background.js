@@ -7,6 +7,8 @@ let location = undefined;
 let ip = undefined
 let latlong = undefined
 
+let textRazorApi = "92a3405afc99b58f603957b79b7766a804d49a192baff7d5dc47a174"
+
 
 function settingsChangeListener() {
     chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -24,6 +26,9 @@ function settingsChangeListener() {
         }
         if (changes.latlong) {
             latlong = changes.latlong.newValue
+        }
+        if (changes.textRazorApi) {
+            textRazorApi = changes.textRazorApi.newValue
         }
     })
 }
@@ -127,6 +132,47 @@ const getWolframShortResult = async (query) => {
     console.log("url for full result is ", url)
     return fetch(url, requestOptions)
 }
+
+const getTextRazorResultEntities = async (query) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("x-textrazor-key", textRazorApi);
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("extractors", "entities");
+    urlencoded.append("text", query);
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    fetch("https://api.textrazor.com", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+}
+const textRazorEntitiesListener = () => {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+        if (msg.textRazorEntitiesQuery) {
+            getTextRazorResultEntities(msg.textRazorEntitiesQuery).then((response) => {
+                response.json().then((result) => {
+                    console.log("The result is ", result)
+                    sendResponse(result)
+                })
+            })
+        }
+    })
+}
+
+textRazorEntitiesListener()
+
+
+
+
 const shortWolframAnswerListener = () => {
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (msg.shortAnswerWolframQuery) {
@@ -309,6 +355,7 @@ let oldSearch = ""
 
 
 // Add event listener every time user search google
+
 
 
 
