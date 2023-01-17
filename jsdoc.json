@@ -20,6 +20,12 @@
   "templates": {
     "search": true,
     "cleverLinks": true,
+    "default": {
+        "staticFiles": {
+            "include": ["./docs_static"]
+        }
+    },
+
     "logo": {
       "url":"https://raw.githubusercontent.com/nhannht/wisdoom/master/src/icons/wisdoomIcon.svg",
       "width": "30px",

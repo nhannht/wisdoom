@@ -13,5 +13,3 @@ done
 echo "$manifest" > build/manifest.json
 # copy icons dir to build dir
 cp -r src/icons build/
-
-
