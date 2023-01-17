@@ -15,4 +15,3 @@ echo "$manifest" > build/manifest.json
 cp -r src/icons build/
 
 
-

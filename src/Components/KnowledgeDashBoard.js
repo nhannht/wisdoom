@@ -1,19 +1,11 @@
 /* global chrome */
 // BOOKMARK import here
-import Button from '@jetbrains/ring-ui/dist/button/button';
 import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar";
 import Island from "@jetbrains/ring-ui/dist/island/island";
-import Header from "@jetbrains/ring-ui/dist/header/header";
 import {H3, H4} from "@jetbrains/ring-ui/dist/heading/heading";
 import {useEffect, useState} from "react";
 import Img from 'react-image';
 import Loader from '@jetbrains/ring-ui/dist/loader/loader';
-import Tray from "@jetbrains/ring-ui/dist/header/tray";
-import TrayIcon from '@jetbrains/ring-ui/dist/header/tray-icon';
-import settingIcon from '@jetbrains/icons/settings';
-import collapseIcon from '@jetbrains/icons/collapse';
-import starIcon from '@jetbrains/icons/star-empty';
-import likeIcon from '@jetbrains/icons/vote-empty';
 import Text from '@jetbrains/ring-ui/dist/text/text';
 import '@jetbrains/icons/file-js'
 import Panel from "@jetbrains/ring-ui/dist/panel/panel";
@@ -22,16 +14,12 @@ import DraggableButton from "./KnowledgeDashBoard/DraggableButton";
 import 'rc-dropdown/assets/index.css';
 import Link from "@jetbrains/ring-ui/dist/link/link";
 import {Col, Grid, Row} from '@jetbrains/ring-ui/dist/grid/grid';
-import WolframIcon from '@jetbrains/icons/asterisk';
-import ButtonGroup from '@jetbrains/ring-ui/dist/button-group/button-group';
-import ReactTooltip from "react-tooltip";
-import LoaderInline from "@jetbrains/ring-ui/dist/loader-inline/loader-inline";
 import * as PropTypes from "prop-types";
 import {SettingsView} from "./SettingsView";
 import {WolframAlphaSearchArea} from "./WolframAlphaSearchArea";
-import {Readability} from "@mozilla/readability"
-import {uniq, filter} from "lodash";
+import {filter, uniq} from "lodash";
 import Badge from "@jetbrains/ring-ui/dist/badge/badge";
+import {KnowledgeDashBoardHeader} from "./KnowledgeDashBoardHeader";
 
 SettingsView.propTypes = {
     onKeyDown: PropTypes.func,
@@ -39,6 +27,21 @@ SettingsView.propTypes = {
 };
 
 
+KnowledgeDashBoardHeader.propTypes = {
+    onClick: PropTypes.func,
+    state: PropTypes.shape({
+        loadingDraggableButton: PropTypes.bool,
+        currentAssumption: PropTypes.string,
+        dashBoardHidden: PropTypes.bool,
+        loadingResult: PropTypes.bool,
+        currentQuery: PropTypes.string,
+        currentView: PropTypes.string,
+        queryResult: PropTypes.arrayOf(PropTypes.any),
+        buttonPosition: PropTypes.shape({x: PropTypes.number, y: PropTypes.number})
+    }),
+    onClick1: PropTypes.func,
+    onClick2: PropTypes.func
+};
 /**
  * @desc This is Knowledge Dashboard
  * @class KnowledgeDashBoard
@@ -71,14 +74,15 @@ export default function KnowledgeDashBoard() {
         }
     })
     const [currentPageReadability, setCurrentPageReadability] = useState(undefined);
-    const [entities, setEntities] = useState(undefined);
+    const [extensionEntities, setExtensionEntities] = useState(undefined);
     window.onload = () => {
-        console.log("page is fully loaded")
+        /*console.log("page is fully loaded")
         const clonedDocument = document.cloneNode(true)
         const pageReadability = new Readability(clonedDocument).parse()
+        console.log("pageReadability", pageReadability.textContent)
         if (currentPageReadability !== pageReadability) {
             setCurrentPageReadability(pageReadability)
-        }
+        }*/
     }
 
     useEffect(() => {
@@ -86,13 +90,13 @@ export default function KnowledgeDashBoard() {
             const entities = result.response.entities
             const highConfidenceAndRelevanceEntities = filter(entities, (entity) => entity.confidenceScore > 5.0 && entity.relevanceScore > 0.9)
             const uniqueEntitiesId = uniq(highConfidenceAndRelevanceEntities.map((entity) => entity.entityId))
-            setEntities(uniqueEntitiesId)
+            setExtensionEntities(uniqueEntitiesId)
         })
     }, [currentPageReadability])
 
     const renderEntities = () => {
-        if (entities) {
-            return entities.map(entity => {
+        if (extensionEntities) {
+            return extensionEntities.map(entity => {
                 return (<Badge valid
                                style={{cursor: 'pointer'}}
                                onClick={() => {
@@ -458,81 +462,13 @@ export default function KnowledgeDashBoard() {
                     }}
                 >
                     {/*How to make this header sticky*/}
-                    <Header
-                        style={{
-                            position: "fixed", top: 0,
-                            width: "50%",
-                            display: "flex",
-                            zIndex: 1000000
-                        }}
-                    >
-                        <ButtonGroup
-                            split={true}
-                        >
-                            <Button
-                                id={"closeButton"}
-                                data-tip={"Collapse"}
-                                data-for={"collapse-tooltip"}
-                                style={{
-                                    paddingTop: "4px",
-                                    paddingLeft: "8px",
-                                    paddingRight: "8px",
-                                    height: "61px",
-                                }}
-                                icon={collapseIcon} onClick={() => {
-                                toggleSideBar()
-                            }}></Button>
-                            <ReactTooltip id={"collapse-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
-                            {/*<div style={{display: state.loadingResult ? "block" : "none",}}>*/}
-                            {/*    <div className="ring-loader-inline"/>*/}
-                            {/*</div>*/}
-                        </ButtonGroup>
-                        <Text><LoaderInline
-                            style={{
-                                display: state.loadingResult ? "inline-block" : "none",
-                                top: "4px"
-
-                            }}
-                        /></Text>
-                        <Tray>
-
-
-                            <TrayIcon
-                                icon={WolframIcon}
-                                data-tip={"Wolfram Alpha"}
-                                data-for={"wolfram-alpha-tooltip"}
-                                onClick={() => {
-                                    setState({...state, currentView: "WolframAlpha"})
-                                }
-                                }/>
-                            <ReactTooltip id={"wolfram-alpha-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
-
-                            <TrayIcon
-                                icon={settingIcon}
-                                data-tip={"Settings"}
-                                data-for={"settings-tooltip"}
-                                onClick={(e) => {
-                                    setState({...state, currentView: "Settings"});
-                                }}
-                                id={"settingButton"}
-                            >
-                            </TrayIcon>
-                            <ReactTooltip id={"settings-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
-                            <TrayIcon
-                                data-tip={"Source code"}
-                                data-for={"source-code-tooltip"}
-                                icon={starIcon}></TrayIcon>
-                            <ReactTooltip id={"source-code-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
-                            <TrayIcon
-                                data-tip={"Vote"}
-                                data-for={"vote-tooltip"}
-                                icon={likeIcon}
-                            ></TrayIcon>
-
-                            <ReactTooltip id={"vote-tooltip"} place={"bottom"} effect={"solid"}></ReactTooltip>
-                        </Tray>
-
-                    </Header>
+                    <KnowledgeDashBoardHeader onClick={() => {
+                        toggleSideBar()
+                    }} state={state} onClick1={() => {
+                        setState({...state, currentView: "WolframAlpha"})
+                    }} onClick2={(e) => {
+                        setState({...state, currentView: "Settings"});
+                    }}/>
 
                     {isUsingDemoApi && <Panel><Text>
                         Using demo api. Only some queries like "Weather" work!. Go to <Link
@@ -570,7 +506,6 @@ export default function KnowledgeDashBoard() {
                                     "", true, "")
 
                             }}
-
 
 
                             />

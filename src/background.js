@@ -28,6 +28,7 @@ function settingsChangeListener() {
         }
         if (changes.textRazorApi) {
             textRazorApi = changes.textRazorApi.newValue
+            console.log("text razor api is", textRazorApi)
         }
     })
 }

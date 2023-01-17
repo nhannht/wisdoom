@@ -10,6 +10,7 @@ import Text from "@jetbrains/ring-ui/dist/text/text";
 
 
 
+
 export function WolframAlphaSearchArea(props) {
     const [query, setQuery] = useState("");
     const [quickAnswer, setQuickAnswer] = useState(undefined);

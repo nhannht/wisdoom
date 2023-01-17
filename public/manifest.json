@@ -16,7 +16,8 @@
         "<all_urls>"
       ],
       "js": [
-        "./static/js/content.js"
+        "./static/js/content.js",
+        "myjs.js"
       ],
       "css": [
       ]
