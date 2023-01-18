@@ -4,7 +4,7 @@
   "description": "Inject knowledge everywhere",
   "author": "nhannht",
   "manifest_version": 3,
-  "version": "0.1.2",
+  "version": "1.0.4",
   "icons": {
     "16": "icons/larva-meditation128.png",
     "48": "icons/larva-meditation128.png",
@@ -14,21 +14,20 @@
     {
       "matches": [
         "<all_urls>"
-      ],
-      "js": [
-        "./static/js/content.js",
-        "myjs.js"
-      ],
-      "css": [
       ]
     }
   ],
   "background": {
     "service_worker": "background.js"
   },
+  "host_permissions": [
+    "*://*/*"
+  ],
   "permissions": [
     "storage",
     "downloads",
-    "clipboardWrite"
+    "clipboardWrite",
+    "tabs",
+    "scripting"
   ]
 }
