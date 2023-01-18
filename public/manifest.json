@@ -18,7 +18,8 @@
     }
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "host_permissions": [
     "*://*/*"
@@ -29,5 +30,10 @@
     "clipboardWrite",
     "tabs",
     "scripting"
-  ]
+  ],
+  "options_ui": {
+    "page": "settings/settings.html",
+    "open_in_tab": true
+  }
+
 }
