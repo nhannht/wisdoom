@@ -25,7 +25,7 @@
     "react-scripts": "5.0.1",
     "react-tooltip": "4.2.21",
     "sb": "^6.5.15",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.1.1",
     "wink-eng-lite-web-model": "^1.4.3",
     "wink-nlp": "^1.13.0"
   },
