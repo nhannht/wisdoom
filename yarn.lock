@@ -13182,10 +13182,10 @@ react-movable@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-movable/-/react-movable-3.0.4.tgz#f55778696c79f9216368038632a365be2cf8ccd2"
   integrity sha512-rIbzl62O7cr7n//GjZMnQ+nWuu2QZI3Mnkm8P0Y4A5Qadt24BKvimlt1kzoxFzJ+Gk2+ZwpM4ZLQUVvKzGjsCw==
 
-react-pro-sidebar@^1.0.0-alpha.9:
-  version "1.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/react-pro-sidebar/-/react-pro-sidebar-1.0.0-alpha.9.tgz#bdff6e352a0767672bdd9d33a037b7e1d2086656"
-  integrity sha512-w1ySfoPirlTGXCZW8jfnI7svZ+MqI629r58eWOEjvpy2AAN5C2hHG2/K6fpzwrQCCLhkgGdn6tMRwsZ4DgFjHw==
+react-pro-sidebar@^1.0.0-beta.2:
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/react-pro-sidebar/-/react-pro-sidebar-1.0.0-beta.2.tgz#fd87be7a4e9244179e18a5562a455961106ffe88"
+  integrity sha512-9wIz4ZHAC2BThHtPbL9nqUkyMgdfOmjDu0OheRAEEm39YqWaF2V0AroWXCqHOV8N4gYjxNKXGSQSrWBEdFjFJA==
   dependencies:
     "@emotion/react" "^11.10.5"
     "@emotion/styled" "^11.10.5"
