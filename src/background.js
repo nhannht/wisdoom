@@ -1,4 +1,6 @@
 /*global chrome*/
+import {union} from "lodash";
+
 /**
  * @type {number|string}
  */
@@ -9,36 +11,39 @@ let latlong = undefined
 
 let textRazorApi = undefined
 // Example: Parse a list of match patterns:
-var acceptedHost = [
+var redefinedHosts = [
     'google.com',
-    'facebook.com'
+    'facebook.com',
+    'wikipedia.org',
+    'nytimes.com'
 ]
 // Example of filtering:
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete') {
-        let match = false;
-        const url = new URL(tab.url);
-        const host = url.host.replace(/^www\./, '');
-        console.log(host)
-        const protocol = url.protocol;
-        if (protocol === 'http:' || protocol === 'https:') {
-            if (acceptedHost.includes(host)) {
-                match = true;
-            }
-        }
-        if (match) {
-            chrome.scripting.executeScript({
-                    target: {tabId: tabId},
-                    files: ['static/js/content.js']
+        chrome.storage.sync.get("hosts",(result) => {
+            let match = false;
+            const url = new URL(tab.url);
+            const host = url.host.replace(/^www\./, '');
+            const protocol = url.protocol;
+            if (protocol === 'http:' || protocol === 'https:') {
+                if (result.hosts.includes(host)) {
+                    match = true;
                 }
-            );
-        }
+            }
+            if (match) {
+                chrome.scripting.executeScript({
+                    target: {tabId: tabId},
+                        files: ['static/js/content.js']
+                    }
+                );
+            }
+        })
     }
 });
 
 function settingsChangeListener() {
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        console.log(changes)
+        console.log("Changes are: ", changes)
         if (changes.wolframApi) {
             api = changes.wolframApi.newValue
         }
@@ -54,9 +59,6 @@ function settingsChangeListener() {
         }
         if (changes.textRazorApi) {
             textRazorApi = changes.textRazorApi.newValue
-        }
-        if (changes.hosts) {
-            acceptedHost = changes.hosts.newValue
         }
     })
 }
@@ -90,10 +92,12 @@ function setDefault() {
     })
     chrome.storage.sync.get("hosts",
         (result) => {
-            if (result.hosts) {
-                acceptedHost = result.hosts
+            if (result.hosts === undefined){
+                chrome.storage.sync.set({hosts: redefinedHosts})
             } else {
-                acceptedHost = ["google.com", "facebook.com"]
+                const userHosts = result.hosts
+                const unionHosts = union(redefinedHosts, userHosts)
+                chrome.storage.sync.set({hosts: unionHosts})
             }
         }
     )
@@ -102,9 +106,6 @@ function setDefault() {
 setDefault()
 
 
-/**
- *
- */
 
 // saveApiListener();
 /**
@@ -149,28 +150,8 @@ const getWolframFullResult = async (query,
     return fetch(url, requestOptions)
 }
 
-const getWolframShortResult = async (query) => {
-    var myHeaders = await new Headers();
 
-    var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    const q = encodeURIComponent(query);
-    // console.log("the api using in this query is ",api)
-    let baseUrl = 'https://api.wolframalpha.com/'
-    let apiPath = 'v1/spoken?'
-    let url = new URL(apiPath, baseUrl)
-    url.searchParams.set('appid', api)
-    url.searchParams.set('i', q)
-    url.search = decodeURI(url.search)
-    console.log("url for full result is ", url)
-    return fetch(url, requestOptions)
-}
-
-const getTextRazorResultEntities = async (query) => {
+const getTextRazorResultEntities =(query) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("x-textrazor-key", textRazorApi);
@@ -206,13 +187,35 @@ textRazorEntitiesListener()
 
 
 const shortWolframAnswerListener = () => {
-    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         if (msg.shortAnswerWolframQuery) {
-            getWolframShortResult(msg.shortAnswerWolframQuery).then((response) => {
-                response.text().then((result) => {
-                    console.log("The short answer result is ", result)
-                    sendResponse(result)
-                })
+            console.log("receive short wolfram query")
+            chrome.storage.sync.get(['wolframApi'],async (result) =>  {
+                const myHeaders =new Headers();
+
+                const requestOptions = {
+                    method: 'GET',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                };
+
+                const q = encodeURIComponent(msg.shortAnswerWolframQuery);
+                // console.log("the api using in this query is ",api)
+                let baseUrl = 'https://api.wolframalpha.com/'
+                let apiPath = 'v1/spoken?'
+                let url = new URL(apiPath, baseUrl)
+                url.searchParams.set('appid', result.wolframApi)
+                url.searchParams.set('i', q)
+                url.search = decodeURI(url.search)
+                console.log("url for full result is ", url)
+                fetch(url, requestOptions).then(
+                    fetchResponse => {
+                        fetchResponse.text().then((result) => {
+                            console.log("The result is ", result)
+                            sendResponse(result)
+                        })
+                    }
+                )
             })
         }
     })

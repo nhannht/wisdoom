@@ -25,8 +25,7 @@ export function WolframAlphaSearchArea(props) {
             } else {
                 setQuickAnswer(undefined)
             }
-            // Send Axios request here
-        }, 1000)
+        }, 3000)
 
         return () => clearTimeout(delayDebounceFn)
 

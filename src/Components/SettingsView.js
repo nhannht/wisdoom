@@ -45,39 +45,7 @@ function SettingOption(props) {
 }
 
 
-function HostsSettingArea(props) {
-    const [hosts, setHosts] = useState(undefined);
-    const [isEditing, setIsEditing] = useState(false);
-    chrome.storage.sync.get("hosts", (result) => {
-        setHosts(result.hosts)
-    })
-    function parseTextToHostsArray(text) {
-        return text.split("\n").map((host) => {
-            return host.trim();
-        }).filter((host) => {
-            return host !== "";
-        })
-    }
-    function hostsArrayToText(hosts) {
-        return hosts.join("\n");
-    }
-    return <Row>
-        <Input multiline
-               value={hostsArrayToText(hosts)}
-               placeholder={"Wisdoom only run on these hosts eg: wikipedia.org"}
-               onClick={() => setIsEditing(true)}
-               onKeyDown={(e) => {
-                   if (e.key === "Enter") {
 
-                   }
-               }
-               }
-
-        />
-    </Row>;
-}
-
-HostsSettingArea.propTypes = {value: PropTypes.any};
 
 export function SettingsView(props) {
     const [wolframApi, setWolframApi] = useState(undefined);
@@ -189,7 +157,6 @@ export function SettingsView(props) {
             }}
 
         />
-        <HostsSettingArea />
 
     </Grid></Content>;
 }
