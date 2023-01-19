@@ -1,4 +1,6 @@
 /*global chrome*/
+import {union} from "lodash";
+
 /**
  * @type {number|string}
  */
@@ -8,72 +10,42 @@ let ip = undefined
 let latlong = undefined
 
 let textRazorApi = undefined
-
-/**
- * @param String input  A match pattern
- * @returns  null if input is invalid
- * @returns  String to be passed to the RegExp constructor */
-function parse_match_pattern(input) {
-    if (typeof input !== 'string') return null;
-    var match_pattern = '(?:^'
-        , regEscape = function (s) {
-        return s.replace(/[[^$.|?*+(){}\\]/g, '\\$&');
-    }
-        , result = /^(\*|https?|file|ftp|chrome-extension):\/\//.exec(input);
-
-    // Parse scheme
-    if (!result) return null;
-    input = input.substr(result[0].length);
-    match_pattern += result[1] === '*' ? 'https?://' : result[1] + '://';
-
-    // Parse host if scheme is not `file`
-    if (result[1] !== 'file') {
-        if (!(result = /^(?:\*|(\*\.)?([^\/*]+))(?=\/)/.exec(input))) return null;
-        input = input.substr(result[0].length);
-        if (result[0] === '*') {    // host is '*'
-            match_pattern += '[^/]+';
-        } else {
-            if (result[1]) {         // Subdomain wildcard exists
-                match_pattern += '(?:[^/]+\\.)?';
-            }
-            // Append host (escape special regex characters)
-            match_pattern += regEscape(result[2]);
-        }
-    }
-    // Add remainder (path)
-    match_pattern += input.split('*').map(regEscape).join('.*');
-    match_pattern += '$)';
-    return match_pattern;
-}
-
 // Example: Parse a list of match patterns:
-var patterns = ['http://*.google.com/*', 'https://*.google.com/*', 'file:///*'];
-
-// Parse list and filter(exclude) invalid match patterns
-var parsed = patterns.map(parse_match_pattern)
-    .filter(function (pattern) {
-        return pattern !== null
-    });
-// Create pattern for validation:
-var pattern = new RegExp(parsed.join('|'));
-
+var redefinedHosts = [
+    'google.com',
+    'facebook.com',
+    'wikipedia.org',
+    'nytimes.com'
+]
 // Example of filtering:
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (changeInfo.status === 'complete' && pattern.test(tab.url)) {
-        chrome.scripting.executeScript({
-            target: {tabId: tabId},
-            files: ['static/js/content.js']
+    if (changeInfo.status === 'complete') {
+        chrome.storage.sync.get("hosts",(result) => {
+            let match = false;
+            const url = new URL(tab.url);
+            const host = url.host.replace(/^www\./, '');
+            const protocol = url.protocol;
+            if (protocol === 'http:' || protocol === 'https:') {
+                if (result.hosts.includes(host)) {
+                    match = true;
+                }
             }
-            );
+            if (match) {
+                chrome.scripting.executeScript({
+                    target: {tabId: tabId},
+                        files: ['static/js/content.js']
+                    }
+                );
+            }
+        })
     }
 });
 
 function settingsChangeListener() {
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        console.log(changes)
+        console.log("Changes are: ", changes)
         if (changes.wolframApi) {
             api = changes.wolframApi.newValue
-
         }
         if (changes.location) {
             location = changes.location.newValue
@@ -87,7 +59,6 @@ function settingsChangeListener() {
         }
         if (changes.textRazorApi) {
             textRazorApi = changes.textRazorApi.newValue
-            console.log("text razor api is", textRazorApi)
         }
     })
 }
@@ -119,14 +90,22 @@ function setDefault() {
     chrome.storage.sync.get("latlong", (result) => {
         latlong = result.latlong
     })
+    chrome.storage.sync.get("hosts",
+        (result) => {
+            if (result.hosts === undefined){
+                chrome.storage.sync.set({hosts: redefinedHosts})
+            } else {
+                const userHosts = result.hosts
+                const unionHosts = union(redefinedHosts, userHosts)
+                chrome.storage.sync.set({hosts: unionHosts})
+            }
+        }
+    )
 }
 
 setDefault()
 
 
-/**
- *
- */
 
 // saveApiListener();
 /**
@@ -171,28 +150,8 @@ const getWolframFullResult = async (query,
     return fetch(url, requestOptions)
 }
 
-const getWolframShortResult = async (query) => {
-    var myHeaders = await new Headers();
 
-    var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    const q = encodeURIComponent(query);
-    // console.log("the api using in this query is ",api)
-    let baseUrl = 'https://api.wolframalpha.com/'
-    let apiPath = 'v1/spoken?'
-    let url = new URL(apiPath, baseUrl)
-    url.searchParams.set('appid', api)
-    url.searchParams.set('i', q)
-    url.search = decodeURI(url.search)
-    console.log("url for full result is ", url)
-    return fetch(url, requestOptions)
-}
-
-const getTextRazorResultEntities = async (query) => {
+const getTextRazorResultEntities =(query) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("x-textrazor-key", textRazorApi);
@@ -228,13 +187,35 @@ textRazorEntitiesListener()
 
 
 const shortWolframAnswerListener = () => {
-    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         if (msg.shortAnswerWolframQuery) {
-            getWolframShortResult(msg.shortAnswerWolframQuery).then((response) => {
-                response.text().then((result) => {
-                    console.log("The short answer result is ", result)
-                    sendResponse(result)
-                })
+            console.log("receive short wolfram query")
+            chrome.storage.sync.get(['wolframApi'],async (result) =>  {
+                const myHeaders =new Headers();
+
+                const requestOptions = {
+                    method: 'GET',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                };
+
+                const q = encodeURIComponent(msg.shortAnswerWolframQuery);
+                // console.log("the api using in this query is ",api)
+                let baseUrl = 'https://api.wolframalpha.com/'
+                let apiPath = 'v1/spoken?'
+                let url = new URL(apiPath, baseUrl)
+                url.searchParams.set('appid', result.wolframApi)
+                url.searchParams.set('i', q)
+                url.search = decodeURI(url.search)
+                console.log("url for full result is ", url)
+                fetch(url, requestOptions).then(
+                    fetchResponse => {
+                        fetchResponse.text().then((result) => {
+                            console.log("The result is ", result)
+                            sendResponse(result)
+                        })
+                    }
+                )
             })
         }
     })
