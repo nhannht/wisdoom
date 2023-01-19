@@ -10,6 +10,7 @@ import Text from "@jetbrains/ring-ui/dist/text/text";
 
 
 
+
 export function WolframAlphaSearchArea(props) {
     const [query, setQuery] = useState("");
     const [quickAnswer, setQuickAnswer] = useState(undefined);
@@ -24,8 +25,7 @@ export function WolframAlphaSearchArea(props) {
             } else {
                 setQuickAnswer(undefined)
             }
-            // Send Axios request here
-        }, 1000)
+        }, 3000)
 
         return () => clearTimeout(delayDebounceFn)
 

@@ -1,6 +1,5 @@
 #copy background.js to build directory
 set -x
-cp src/background.js build/
 manifest=$(cat public/manifest.json)
 # Get th name of multi css files  from build/static/css/ to add to manifest.json content_scripts.css
 cssFiles=$(ls build/static/css/*.css)
@@ -13,6 +12,3 @@ done
 echo "$manifest" > build/manifest.json
 # copy icons dir to build dir
 cp -r src/icons build/
-
-
-

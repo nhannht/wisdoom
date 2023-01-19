@@ -32,3 +32,6 @@ bigger system.
 
 ##### Suggest most relevant entities (require TextRazor api key)
 ![pic7](showcases/pic7.png)
+
+##### Wisdoom only inject it power to the website you want
+![pic8](showcases/pic8.png)

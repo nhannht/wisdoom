@@ -7,7 +7,7 @@ import '@jetbrains/ring-ui/dist/style.css';
 // import {GoogleTabs} from "./Components/GoogleTabs";
 import KnowledgeDashBoard from "./Components/KnowledgeDashBoard";
 import {ProSidebarProvider} from "react-pro-sidebar";
-// import cheerio
+
 // chrome.runtime.onMessage.addListener((msg) => {
 //     if (msg.google) {
 //         const resultJSON = JSON.parse(msg.google)

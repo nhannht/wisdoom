@@ -45,6 +45,8 @@ function SettingOption(props) {
 }
 
 
+
+
 export function SettingsView(props) {
     const [wolframApi, setWolframApi] = useState(undefined);
     chrome.storage.sync.get("wolframApi", (result) => {
@@ -66,6 +68,7 @@ export function SettingsView(props) {
     chrome.storage.sync.get("textRazorApi", (result) => {
         setTextRazorApi(result.textRazorApi)
     })
+
 
 
     return <Content><Grid>
