@@ -76,7 +76,7 @@
     "babel-plugin-named-exports-order": "^0.0.2",
     "browserify": "^17.0.0",
     "esbuild": "0.17.2",
-    "jsdoc": "3.6.11",
+    "jsdoc": "4.0.0",
     "parcel": "^2.8.2",
     "prop-types": "^15.8.1",
     "serve": "^14.1.2",
