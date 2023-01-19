@@ -30,7 +30,7 @@
     "wink-nlp": "^1.13.0"
   },
   "scripts": {
-    "build_final": "craco build && yarn build_settings && yarn build_background &&  yarn preprocessing",
+    "build_final": "yarn build && yarn build_settings && yarn build_background &&  yarn preprocessing",
     "start": "craco start",
     "build_settings": "bash setting_compile.sh",
     "build_background": "bash build_background.sh",
