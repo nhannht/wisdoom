@@ -1,10 +1,30 @@
+name: "CodeQl scanning"
 on:
   push:
-    branches: [develop]
+    branches: [ develop ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
   schedule:
     - cron: '20 14 * * 1'
+
+jobs:
+  CodeQL-Build:
+    # CodeQL runs on ubuntu-latest, windows-latest, and macos-latest
+    runs-on: ubuntu-latest
+
+    permissions:
+      # required for all workflows
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: init codeql
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
