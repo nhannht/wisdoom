@@ -2,6 +2,10 @@
 [![Create release](https://github.com/nhannht/wisdoom/actions/workflows/release.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/release.yml)
 [![Create beta release](https://github.com/nhannht/wisdoom/actions/workflows/release-beta.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/release-beta.yml)
 <a href="https://zenhub.com"><img src="https://dxssrr2j0sq4w.cloudfront.net/3.2.0/img/external/zenhub-badge.png" alt="ZenHub logo"></a>
+[![CodeQl scanning](https://github.com/nhannht/wisdoom/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/nhannht/wisdoom/actions/workflows/codeql-analysis.yml)
+[![](https://api.codiga.io/project/35482/score/svg )](https://app.codiga.io/hub/project/35482/wisdoom)
+[![](https://api.codiga.io/project/35482/status/svg)](https://app.codiga.io/hub/project/35482/wisdoom)
+
 
 Descendant of Wolfram Panda
 

@@ -1,7 +1,7 @@
 name: "CodeQl scanning"
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop,master ]
   pull_request:
     branches: [ master ]
     paths-ignore:
