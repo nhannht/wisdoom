@@ -1851,6 +1851,11 @@
   resolved "https://registry.yarnpkg.com/@jetbrains/icons/-/icons-3.20.0.tgz#71fa5dba3313764f6b914da1d9e91a0eabc89fc3"
   integrity sha512-EktLK+wnysLMilK4WW10vsqTFooWNXNnK9VUysjGkR/YOJHic+1C9uLYH/YSKpIhhLyxJ1W9wiCtYwGf5c8NXA==
 
+"@jetbrains/icons@^3.20.1":
+  version "3.20.3"
+  resolved "https://registry.yarnpkg.com/@jetbrains/icons/-/icons-3.20.3.tgz#3302d7b71367f3ab19b0de43527b424a4e072bb8"
+  integrity sha512-vdziU0k32ihNRaunB0AJGqwfHd+KookbX2suHp5H4JTwWMS4LvdfOMkoSPHGmFFAme6OchZ4AVO7NhMFIP6MDw==
+
 "@jetbrains/logos@^2.2.10":
   version "2.2.10"
   resolved "https://registry.yarnpkg.com/@jetbrains/logos/-/logos-2.2.10.tgz#3d73c1b640ed8f754b61a81fc18e742a6027eaba"

@@ -6,7 +6,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@headlessui/tailwindcss": "^0.1.2",
-    "@jetbrains/icons": "^3.20.0",
+    "@jetbrains/icons": "^3.20.1",
     "@jetbrains/ring-ui": "^5.0.85",
     "@mozilla/readability": "^0.4.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
