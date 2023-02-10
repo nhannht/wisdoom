@@ -1,6 +1,6 @@
 {
   "name": "wisdoom",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -12,7 +12,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.4.3",
     "lodash": "^4.17.21",
     "new-github-issue-url": "^1.0.0",
     "rc-dropdown": "^4.0.1",
@@ -25,7 +25,7 @@
     "react-scripts": "5.0.1",
     "react-tooltip": "4.2.21",
     "sb": "^6.5.15",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.1.1",
     "wink-eng-lite-web-model": "^1.4.3",
     "wink-nlp": "^1.13.0"
   },
@@ -72,10 +72,10 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.0.0",
-    "@types/chrome": "^0.0.206",
+    "@types/chrome": "^0.0.211",
     "babel-plugin-named-exports-order": "^0.0.2",
     "browserify": "^17.0.0",
-    "esbuild": "0.17.2",
+    "esbuild": "0.17.5",
     "jsdoc": "3.6.11",
     "parcel": "^2.8.2",
     "prop-types": "^15.8.1",

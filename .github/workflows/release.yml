@@ -41,9 +41,20 @@ jobs:
           sudo apt install npm
           sudo npm install -g yarn
           yarn install
-          echo "Run yarn build"
+      - name: build content script
+        run: |
           unset CI
           yarn build
+      - name: build settings view
+        run: |
+          unset CI
+          yarn build_settings
+      - name: build background script
+        run: |
+          unset CI
+          yarn build_background
+      - name: preprocessing manifest and other utilities
+        run: |
           echo "Run preprocessing.sh"
           yarn preprocessing
       - name: Zip release
