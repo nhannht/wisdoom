@@ -21,7 +21,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "4.4.5",
     "react-image": "3.0.3",
-    "react-pro-sidebar": "^1.0.0-alpha.9",
+    "react-pro-sidebar": "^1.0.0",
     "react-scripts": "5.0.1",
     "react-tooltip": "4.2.21",
     "sb": "^6.5.15",
